@@ -4,16 +4,18 @@
 #include "Test.h"
 
 typedef struct _TestWrapper{
-    Test* test; cycles:1 = true;
-    struct _TestWrapper next;
+    Test* test;
+    struct _TestWrapper* next;
     } TestWrapper;
 
-public class TestQueue{
-    public void TestQueue(Test t);
-    public void addTest(Test t);
-    public Test pop();
-    public int size();
-}
+class TestQueue{
+    public:
+    TestQueue();
+    TestQueue(Test* t);
+    void addTest(Test* t);
+    Test* pop();
+    int size();
+};
 
 
 
