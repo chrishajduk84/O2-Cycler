@@ -2,33 +2,33 @@
 #define TEST_H
 
 typedef struct _TestMask{
-    char cycles:1 = true;
-    char absorbTemp:1 = false;
-    char releaseTemp:1 = false;
-    char inPressure:1 = false;
-    char outPressure:1 = false;
-    char heatingCurrent:1 = false;
-    char heatingVoltage:1 = false;
-    char maxHeatingTime:1 = true;
-    char maxCoolingTime:1 = true;
-    char minHeatingTime:1 = false;
-    char minCoolingTIme:1 = false;
-    char flow:1 = false; //LPM
+    char cycles:1; //Default Value: true
+    char absorbTemp:1; //Default Value: false
+    char releaseTemp:1; //Default Value: false
+    char inPressure:1; //Default Value: false
+    char outPressure:1; //Default Value: false
+    char heatingCurrent:1; //Default Value: false
+    char heatingVoltage:1; //Default Value: false
+    char maxHeatingTime:1; //Default Value: true
+    char maxCoolingTime:1; //Default Value: true
+    char minHeatingTime:1; //Default Value: false
+    char minCoolingTIme:1; //Default Value: false
+    char flow:1; //Default Value: false
 } TestMask;
 
 typedef struct _TestParameters{
-    int cycles = 1;
-    float absorbTemp = 25;
-    float releaseTemp = 80; //degreesC
-    float inPressure = 8;      //psi?
-    float outPressure = -8;
-    float heatingCurrent = 0.8; //Amperes
-    float heatingVoltage = 6; //Volts
-    float maxHeatingTime = 3*60; //seconds
-    float maxCoolingTime = 3*60;
-    float minHeatingTime = 3*60;
-    float minCoolingTIme = 3*60;
-    float flow = 0.5; //LPM
+    int cycles; //Default Value: 1
+    float absorbTemp; //Default Value: 25
+    float releaseTemp; //Default Value: 80C
+    float inPressure; //Default Value: 8 psi
+    float outPressure; //Default Value: 8 psi
+    float heatingCurrent; //Default Value: 0.8A
+    float heatingVoltage; //Default Value: 6V
+    float maxHeatingTime; //Default Value: 3*60 seconds
+    float maxCoolingTime; //Default Value: 3*60 seconds
+    float minHeatingTime; //Default Value: 3*60 seconds
+    float minCoolingTIme; //Default Value: 3*60 seconds
+    float flow; //Default Value: 0.5 LPM
 } TestParameters;
 
 typedef struct _TestData{
@@ -44,10 +44,11 @@ typedef struct _TestData{
     float flow;
 } TestData;
 
-public class Test{
-    Test(TestMask TM, TestParameters setpoint, TestParameters
-allowedVariance)
-}
+class Test{
+  public:
+  Test(TestMask* TM, TestParameters* setpoint, TestParameters* allowedVariance);
+  void update();
+};
 
 
 
