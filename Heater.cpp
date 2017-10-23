@@ -31,7 +31,7 @@ Heater::~Heater(){
     //Remove all entries in static variables
     bool removed = false;
     for (int i = 0; i < listLength; i++){
-        if (pinList[i] = togglePin){
+        if (pinList[i] == togglePin){
             removed = true;
         }
         if (removed){
