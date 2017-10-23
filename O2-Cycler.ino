@@ -1,17 +1,17 @@
+#include "Heater.h"
 #include "Test.h"
 #include "TestQueue.h"
-
-#define NUM_CARTRIDGES 3
+#include "O2-Cycler.h"
 
 TestQueue* tests[NUM_CARTRIDGES];
 int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (cartridge independent)
 
-Test* currentTest[NUM_CARTRIDGES];
-    
+Test* currentTest[NUM_CARTRIDGES]; 
+
 void setup(){
     //Initialize and Check Sensors and Status (Get a baseline for any sensors that
     //are necessary)
-    
+     
     //Check how many cartridges are loaded
     
     //Make a list of common or possible tests to complete
@@ -30,6 +30,7 @@ void setup(){
             tests[i] = new TestQueue(tes);
         }
     }
+    Heater(13);
     
     //"Please start recording data!"
     
@@ -43,7 +44,7 @@ void loop(){
         
         //Control Decisions
         currentTest[i]->update();
-        
+                
     }
     
     //Update Display if available
