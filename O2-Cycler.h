@@ -5,7 +5,7 @@
 
 #include <Arduino.h>
 
-static unsigned int heaterPinout[NUM_CARTRIDGES] = {1,2,3};
+static unsigned int heaterPinout[NUM_CARTRIDGES] = {31,33,35};
 static unsigned int vAPinout[NUM_CARTRIDGES] = {1,2,3};
 static unsigned int vBPinout[NUM_CARTRIDGES] = {1,2,3};
 static unsigned int vCPinout[NUM_CARTRIDGES] = {1,2,3};

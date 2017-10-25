@@ -9,12 +9,6 @@ TestQueue::TestQueue(){}
 
 TestQueue::TestQueue(Test* t){
     this->addTest(t);
-    /*TestWrapper tw = new TestWrapper(); 
-    tw.test = &t;
-    tw.next = 0;  
-    begin = &tw;
-    end = &tw;
-    queueCounter++;*/
 }
 
 void TestQueue::addTest(Test* t){
