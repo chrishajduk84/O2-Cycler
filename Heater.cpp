@@ -8,7 +8,7 @@ Heater* Heater::heaterList[NUM_CARTRIDGES];
 
 /* NOTE: THIS IS A PWM HACK */
 long int timer = 0;
-ISR(TIMER2_COMPA_vect)   // timer compare interrupt service routine
+ISR(TIMER0_COMPA_vect)   // timer compare interrupt service routine
 {
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
@@ -20,7 +20,6 @@ ISR(TIMER2_COMPA_vect)   // timer compare interrupt service routine
       }
     }
   }
-
   timer += 1;
 }
 /****************************/
@@ -35,6 +34,7 @@ Heater::Heater(unsigned int _togglePin){
     }
     //If the heating pin hasn't already been initialized, add it to the list
     heaterList[listLength] = this;
+    pinMode(_togglePin, OUTPUT);
     pinList[listLength++] = togglePin = _togglePin;
 }
 

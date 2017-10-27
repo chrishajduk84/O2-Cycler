@@ -26,10 +26,11 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
             //Serial.println("Initialized Cartridge Already Exists!");
             exit(1);
         }
+        pinMode(heaterPinout[id-1], OUTPUT);
+        //digitalWrite(heaterPinout[id-1], HIGH);
         //heaterPID.setSetpointSource(&TEMPORARY_HARDCODED_VALUE);
         //heaterPID.setSensorSource(&TEMPORARY_HARDCODED_VALUE2);
         //heaterPID.setOutput(&heater,&heater.setPWM);
-        digitalWrite(31,true);
 
     //Do things with the queue?
     }

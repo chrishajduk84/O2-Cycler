@@ -11,14 +11,24 @@ Test* currentTest[NUM_CARTRIDGES];
 Cartridge* cartridges[NUM_CARTRIDGES];
 
 void setup(){ 
+    //Hardware Setup
     Serial.begin(115200);
+
+    /******Setup for Timer0 Interrupt function******/
+    TCCR1A = 0;// set entire TCCR1A register to 0
+    TCCR1B = 0;// same for TCCR1B
+    TCNT1  = 0;//initialize counter value to 0
+    // set compare match register for 1hz increments
+    OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+    TIMSK0 |= (1 << OCIE0A);
+    /***********************************************/
   
     //Check how many cartridges are loaded
 
     //Initialize and Check Sensors and Status for each cartridge (Get a baseline for any sensors that
     //are necessary). Create Cartridge Object.
     for (int i = 0; i < NUM_CARTRIDGES; i++){
-      cartridges[i] = new Cartridge(i);
+      cartridges[i] = new Cartridge(i+1);
     }
     
     //Make a list of common or possible tests to complete
@@ -89,7 +99,7 @@ String questionValue(String question){
   String tmp = "";
   Serial.print(question);
   while (tmp == ""){if (Serial.available() > 0)tmp = Serial.readString();}
-  Serial.println(tmp);  
+  Serial.println(tmp);
   return tmp;
 }
 

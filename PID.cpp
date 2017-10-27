@@ -18,6 +18,7 @@ ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
         }
     }
     timer += 1;
+    Serial.println(timer);
 }
 
 //Non-static
