@@ -36,11 +36,11 @@ void setup(){
     //Generate Test Objects - User chooses the tests to run
     for (int i = 0; i < NUM_CARTRIDGES; i++){
         for (int t = 0; t < totalTime[i]; t++){
-            TestMask* tm = new TestMask();
             TestParameters* tp = new TestParameters();
-            TestParameters* var = new TestParameters();
-            userInputTest(i,t,tm,tp,var);
-            Test* tes = new Test(tm,tp,var);
+            TestData* td = new TestData();
+            TestOutputs* to = new TestOutputs();
+            userInputTest(i,t,tp,td);
+            Test* tes = new Test(to,tp,td);
             tests[i] = new TestQueue(tes);
         }
     }
@@ -60,14 +60,15 @@ void loop(){
         //outputData();
         
         //Control Decisions
-        currentTest[i]->update();
+        //currentTest[i]->update();
+        cartridges[i]->update();
                 
     }
     
     //Update Display if available
 }
 
-void userInputTest(int cartridgeID, int timeint, TestMask* tm, TestParameters* tp, TestParameters* var){
+void userInputTest(int cartridgeID, int timeint, TestParameters* tp, TestData* var){
   char buf[100];
   sprintf(buf, "Cartridge:%d - Interval:%d, Specify the parameters:",cartridgeID + 1, timeint);
   Serial.println(buf);
@@ -82,16 +83,6 @@ void userInputTest(int cartridgeID, int timeint, TestMask* tm, TestParameters* t
   tp->maxHeatingTime = 3*60;
   tp->maxCoolingTime = 3*60;
 
-  tm->cycles = true;
-  tm->desorpTemp = true;
-  tm->absorbTemp = true;
-  tm->heatingPower = true;
-  tm->inPressure = true;
-  tm->outPressure = true;
-  tm->maxHeatingTime = true;
-  tm->maxCoolingTime = true;
-  tm->minHeatingTime = false;
-  tm->minCoolingTime = false;  
 }
 
 String questionValue(String question){

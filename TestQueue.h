@@ -15,6 +15,7 @@ class TestQueue{
     void addTest(Test* t);
     Test* pop();
     int size();
+    Test* getCurrentTest();
 };
 
 

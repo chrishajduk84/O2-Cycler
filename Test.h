@@ -1,19 +1,19 @@
 #ifndef TEST_H
 #define TEST_H
 
-typedef struct _TestMask{
-    char cycles:1; //Default Value: true
-    char absorbTemp:1; //Default Value: false
-    char desorpTemp:1; //Default Value: false
-    char inPressure:1; //Default Value: false
-    char outPressure:1; //Default Value: false
-    char heatingPower:1; //Default Value: false
-    char maxHeatingTime:1; //Default Value: true
-    char maxCoolingTime:1; //Default Value: true
-    char minHeatingTime:1; //Default Value: false
-    char minCoolingTime:1; //Default Value: false
-    //char flow:1; //Default Value: false
-} TestMask;
+#include "PID.h"
+
+#define HEATER_UPDATE 1000
+#define PUMP_UPDATE 200
+
+typedef struct _TestOutputs{ //These contain function pointers
+    void* (*heater)(int);
+    void* (*inPump)(int);
+    void* (*outPump)(int);
+    void* (*valve3)(int);
+    void* (*valve2A)(int);
+    void* (*valve2B)(int);
+} TestOutputs;
 
 typedef struct _TestParameters{
     int cycles; //Default Value: 1
@@ -28,6 +28,17 @@ typedef struct _TestParameters{
     float minCoolingTime; //Default Value: 3*60 seconds
     //float flow; //Default Value: 0.5 LPM
 } TestParameters;
+
+/*typedef struct _TestSensors{
+    float temperature;
+    float inPressure;
+    float outPressure;
+    float heatingCurrent;
+    float heatingVoltage;
+    float stateTime;
+    float totalTime;
+    float flow;
+} TestSensors;*/
 
 typedef struct _TestData{
     bool state;
@@ -44,8 +55,8 @@ typedef struct _TestData{
 
 class Test{
   public:
-  Test(TestMask* TM, TestParameters* setpoint, TestParameters* allowedVariance);
-  void update();
+  Test(TestOutputs* outputs, TestParameters* setpoint, TestData* sensors);
+  bool update(TestParameters* data);
 };
 
 

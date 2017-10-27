@@ -4,6 +4,26 @@
 //These are static!!!
 unsigned int Heater::pinList[NUM_CARTRIDGES];
 unsigned int Heater::listLength;
+Heater* Heater::heaterList[NUM_CARTRIDGES];
+
+/* NOTE: THIS IS A PWM HACK */
+long int timer = 0;
+ISR(TIMER2_COMPA_vect)   // timer compare interrupt service routine
+{
+  for (int i = 0; i < Heater::listLength; i++){
+    if (Heater::heaterList[i]->pwm){
+      if (timer%100 < Heater::heaterList[i]->duty){
+        Heater::heaterList[i]->toggle(true);
+      }
+      else{
+        Heater::heaterList[i]->toggle(false);
+      }
+    }
+  }
+
+  timer += 1;
+}
+/****************************/
 
 Heater::Heater(unsigned int _togglePin){
     //Assign the heating pin to the object
@@ -14,6 +34,7 @@ Heater::Heater(unsigned int _togglePin){
         }
     }
     //If the heating pin hasn't already been initialized, add it to the list
+    heaterList[listLength] = this;
     pinList[listLength++] = togglePin = _togglePin;
 }
 
@@ -82,3 +103,13 @@ void Heater::toggle(bool _state){
 bool Heater::getState(){
     return state;
 }
+
+void Heater::setPWM(int _duty){ //Hacks not really PWM
+  pwm = true;
+  duty = _duty;
+}
+
+void Heater::stopPWM(){ //Hacks not really PWM
+  pwm = false;
+}
+

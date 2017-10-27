@@ -5,6 +5,10 @@
 Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
+//TODO:Temporary
+float TEMPORARY_HARDCODED_VALUE = 80;
+float TEMPORARY_HARDCODED_VALUE2 = 0;
+
 Cartridge* Cartridge::getById(unsigned int id){
     if (id > 0)
         return cList[id-1];
@@ -12,7 +16,7 @@ Cartridge* Cartridge::getById(unsigned int id){
         return 0;
 }
 
-Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(){
+Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(1000){
     //Assign a reference in a static array
     if (id <= NUM_CARTRIDGES){
         if (!cList[id-1]){
@@ -22,6 +26,12 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
             //Serial.println("Initialized Cartridge Already Exists!");
             exit(1);
         }
+        //heaterPID.setSetpointSource(&TEMPORARY_HARDCODED_VALUE);
+        //heaterPID.setSensorSource(&TEMPORARY_HARDCODED_VALUE2);
+        //heaterPID.setOutput(&heater,&heater.setPWM);
+        digitalWrite(31,true);
+
+    //Do things with the queue?
     }
 }
 
@@ -41,8 +51,10 @@ void Cartridge::setTestQueue(TestQueue* tq){
 
 void Cartridge::update(){
     //Update Sensor Data
-
+    
     //Update Control Systems
-
+    currentTest = tQueue.getCurrentTest();
+    TestParameters tp;
+    currentTest->update(&tp);
     //Update TestQueue
 }

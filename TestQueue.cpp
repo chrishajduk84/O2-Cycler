@@ -34,6 +34,11 @@ Test* TestQueue::pop(){
     //Return       
     return nextTest;
 }
+
+Test* TestQueue::getCurrentTest(){ //Does not pop from TestQueue
+  return begin->test;
+}
+
 int TestQueue::size(){
     return queueCounter;
 }

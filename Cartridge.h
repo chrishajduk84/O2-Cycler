@@ -6,13 +6,17 @@
 #include "Valve.h"
 #include "Pump.h"
 #include "TestQueue.h"
+#include "PID.h"
+
 
 class Cartridge{
     static Cartridge* cList[NUM_CARTRIDGES];
     static unsigned int listLength;
+    Test* currentTest;
     
     public:
     Heater heater;
+    PID<Heater> heaterPID;
     Valve vA; //2 Way
     Valve vB; //2 Way
     Valve vC; //3 Way
