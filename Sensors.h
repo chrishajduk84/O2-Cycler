@@ -3,6 +3,7 @@
 
 #include "O2-Cycler.h"
 #include <math.h>
+#include <Adafruit_MAX31855.h>
 
 class Sensors {
 	static unsigned int *pP_Abs, *pP_Gauge, *pTherm, *pFlow, *pTFlow, *pO2, *pO2Therm, *pHeaterCurrent;
@@ -14,26 +15,27 @@ class Sensors {
 	const double C3 = -0.000004333;
 	const double C0 = -(C3*pow(20, 3) + C2*pow(20, 1) + C1*20);
 	float THERM_RESIST = 0.0;
+  Adafruit_MAX31855 thermocouple;
 	public:
 	float valP_Abs, valP_Gauge, valTherm, valFlow, valTFlow, valO2, valO2Therm, valO2Comp, valHeaterCurrent = 0;
 	Sensors (int);
-	void getP_Abs();
+	float getP_Abs();
 	void printP_Abs();
-	void getP_Gauge();
+	float getP_Gauge();
 	void printP_Gauge();
-	void getTherm();
+	float getTherm();
 	void printTherm();
-	void getFlow();
+	float getFlow();
 	void printFlow();
-	void getTFlow();
+	float getTFlow();
 	void printTFlow();
-	void getO2();
+	float getO2();
 	void printO2();
-	void getO2Therm();
+	float getO2Therm();
 	void printO2Therm();
-	void getO2Comp();			//It is not required to get O2 and O2Therm vals separately before executing this function: it has all the functionality of the aformentioned functions
+	float getO2Comp();			//It is not required to get O2 and O2Therm vals separately before executing this function: it has all the functionality of the aformentioned functions
 	void printO2Comp();
-	void getHeaterCurrent();
+	float getHeaterCurrent();
 	void printHeaterCurrent();
 };
 
