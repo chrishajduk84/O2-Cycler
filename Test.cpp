@@ -2,12 +2,13 @@
 
 TestOutputs mTO;
 TestParameters mSettings;
+TestSetpoints mSetpoints;
 TestData mSensors;
 TestData mData;
 
-bool desorpState = false;
+bool desorbState = false;
 int cycle = 0;
-
+float temperature = 0;
 
 Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
          
@@ -19,27 +20,51 @@ Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
     mTO = *outputs;
     mSettings = *settings;
     mSensors = *sensors;
-
-    //Initialize PIDs
-//    heaterPID.setSetpointSource(&TEMPORARY_HARDCODED_VALUE); //This will come from the settings
-//    heaterPID.setSensorSource(&TEMPORARY_HARDCODED_VALUE2); //This will come from some Sensor Object
-//    heaterPID.setOutput(outputs->heater); //This will be passed in
-
-    //TODO:OTHER COMPONENTS INITIALIZED
-    //pumpPID.setSetpointSource();
     
     
 }
 
-bool Test::update(TestParameters* data){
+TestOutputs* Test::getTestOutputs(){
+  return &mTO;
+}
+
+TestParameters* Test::getTestParameters(){
+  return &mSettings;
+}
+
+TestSetpoints* Test::getTestSetpoints(){ //Affected by the state
+  return &mSetpoints;
+}
+
+TestData* Test::getTestData(){
+  return &mData;
+}
+
+bool Test::update(TestSetpoints* sensorData){
     //Check if test settings need to be changed (new test in the queue?)
     if (cycle > mSettings.cycles){
       return false; //Destroy current test object, alternatively raise a flag
     }
-        
-    //Get Sensor Readings
     
-    
+    //Update Setpoints
+    if (desorbState){
+      if (sensorData->temperature >= mSetpoints.temperature){// && mData->stateTime >= mSettings->minHeatingTime){
+        //At the end of the desorption state, switch to absorption
+        desorbState = false;
+        //Update Setpoints - Temperature, Pressure
+        mSetpoints.temperature = mSettings.absorbTemp;
+      }
+    }
+    else if (!desorbState){
+      if (sensorData->temperature <= mSetpoints.temperature){ // && mData->stateTime >= mSettings->minCoolingTime){
+        //At the end of the absorption state, add one cycle and switch to desorbtion
+        cycle++;
+        desorbState = true;
+        //Update Setpoints - Temperature, Pressure
+        mSetpoints.temperature = mSettings.desorpTemp;
+      }
+    }
+     
     /*====== OUTPUTS ======*/
     //Update Low Frequency thermal PWM controller based on parameters
 

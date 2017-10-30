@@ -52,14 +52,9 @@ void setup(){
             userInputTest(i,t,tp,td);
             Test* tes = new Test(to,tp,td);
             tests[i] = new TestQueue(tes);
+            cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
         }
     }
-    
-    //Load TestQueue into each Cartridge
-    for (int i = 0; i < NUM_CARTRIDGES; i++){
-      cartridges[i]->setTestQueue(tests[i]);
-    }
-    
     //"Please start recording data!"
 }
 
@@ -70,7 +65,6 @@ void loop(){
         //outputData();
         
         //Control Decisions
-        //currentTest[i]->update();
         cartridges[i]->update();
                 
     }

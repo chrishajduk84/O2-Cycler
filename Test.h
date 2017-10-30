@@ -6,7 +6,7 @@
 #define HEATER_UPDATE 1000
 #define PUMP_UPDATE 200
 
-typedef struct _TestOutputs{ //These contain function pointers
+typedef struct _TestOutputs{ //These contain function pointers //THIS MAYBE DEPRECIATED/REMOVED
     void* (*heater)(int);
     void* (*inPump)(int);
     void* (*outPump)(int);
@@ -29,6 +29,11 @@ typedef struct _TestParameters{
     //float flow; //Default Value: 0.5 LPM
 } TestParameters;
 
+typedef struct _TestSetpoints{
+    int cycles;
+    float temperature;
+    float pressure;
+} TestSetpoints;
 /*typedef struct _TestSensors{
     float temperature;
     float inPressure;
@@ -41,7 +46,7 @@ typedef struct _TestParameters{
 } TestSensors;*/
 
 typedef struct _TestData{
-    bool state;
+    bool state; //True = desorb, false = absorb
     int cycles;
     float temperature;
     float inPressure;
@@ -56,7 +61,11 @@ typedef struct _TestData{
 class Test{
   public:
   Test(TestOutputs* outputs, TestParameters* setpoint, TestData* sensors);
-  bool update(TestParameters* data);
+  TestOutputs* getTestOutputs();
+  TestParameters* getTestParameters();
+  TestSetpoints* getTestSetpoints();
+  TestData* getTestData();
+  bool update(TestSetpoints* sensorData);
 };
 
 

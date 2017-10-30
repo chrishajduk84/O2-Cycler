@@ -8,6 +8,7 @@
 #include "TestQueue.h"
 #include "PID.h"
 
+#define HEATER_UPDATE_PERIOD 1000
 
 class Cartridge{
     static Cartridge* cList[NUM_CARTRIDGES];

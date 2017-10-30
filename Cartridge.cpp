@@ -6,8 +6,8 @@ Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
 //TODO:Temporary
-float TEMPORARY_HARDCODED_VALUE = 80;
-float TEMPORARY_HARDCODED_VALUE2 = 0;
+float DEFAULT_VALUE = 0;
+long lastLoopTime = 0;
 
 Cartridge* Cartridge::getById(unsigned int id){
     if (id > 0)
@@ -16,21 +16,20 @@ Cartridge* Cartridge::getById(unsigned int id){
         return 0;
 }
 
-Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(1000){
+Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD){
     //Assign a reference in a static array
     if (id <= NUM_CARTRIDGES){
         if (!cList[id-1]){
             cList[id-1] = this;
         }
         else{
-            //Serial.println("Initialized Cartridge Already Exists!");
+            Serial.println("Initialized Cartridge Already Exists!");
             exit(1);
         }
-        pinMode(heaterPinout[id-1], OUTPUT);
-        //digitalWrite(heaterPinout[id-1], HIGH);
-        //heaterPID.setSetpointSource(&TEMPORARY_HARDCODED_VALUE);
-        //heaterPID.setSensorSource(&TEMPORARY_HARDCODED_VALUE2);
-        //heaterPID.setOutput(&heater,&heater.setPWM);
+
+        heaterPID.setSetpointSource(&DEFAULT_VALUE);
+        heaterPID.setSensorSource(&DEFAULT_VALUE);
+        heaterPID.setOutput(&heater,&heater.setPWM);
 
     //Do things with the queue?
     }
@@ -53,9 +52,18 @@ void Cartridge::setTestQueue(TestQueue* tq){
 void Cartridge::update(){
     //Update Sensor Data
     
-    //Update Control Systems
-    currentTest = tQueue.getCurrentTest();
-    TestParameters tp;
-    currentTest->update(&tp);
+    
     //Update TestQueue
+    currentTest = tQueue.getCurrentTest();
+    TestSetpoints sensors;
+    if (!currentTest->update(&sensors)){
+      //Start new test and switch control systems
+      tQueue.pop();
+      currentTest = tQueue.getCurrentTest();
+      heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
+    }
+
+    //Update Control Systems
+    heaterPID.update(millis() - lastLoopTime);
+    lastLoopTime = millis();
 }

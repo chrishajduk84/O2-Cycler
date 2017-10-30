@@ -1,5 +1,6 @@
 #include "PID.h"
 
+
 //Timer Interrupt -> PID -> Direct Control  
 
 //Static Variables
@@ -9,13 +10,13 @@
 
 ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
 {
-    for (int i = 0; i < MAX_CONTROLLERS; i++){
-        if (controllers[i]){
-            if (mUpdatePeriod[i] >= timer - controllers[i]->lastTime){
-                controllers[i]->update(mUpdatePeriod[i]);
-                controllers[i]->lastTime = timer;
-            }
+    ControllerItem* list = controllerList;
+    while (list){
+        if (list->updatePeriod >= timer - list->lastTime){
+                list->controller->update(list->updatePeriod);
+                list->lastTime = timer;
         }
+        list = list->next;
     }
     timer += 1;
     Serial.println(timer);
@@ -29,45 +30,45 @@ float* PID::K = {1,1,1,0,0};
 int PID::mUpdatePeriod;
 long PID::lastTime = 0;
 */
-template<class T> PID<T>::PID(int updatePeriod){ //updatePeriod in milliseconds, keep above 100ms if possible
+/*template <typename T> PID<T>::PID(int updatePeriod){ //updatePeriod in milliseconds, keep above 100ms if possible
     //Register PID controller update with static interrupt
     
 }
 
-template<class T> PID<T>::~PID(){
+template <typename T> PID<T>::~PID(){
     //Deregister PID Controller from static timer interrupt
     
 }
 
-template<class T> void PID<T>::setSetpointSource(void* data){ //Cannot be a function
+template <typename T> void PID<T>::setSetpointSource(void* data){ //Cannot be a function
     setSource = data;
 }
 
-template<class T> void PID<T>::setSensorSource(void* data){
+template <typename T> void PID<T>::setSensorSource(void* data){
     sensorSource = data;
 }
 
 /*PID::setSourceFunction(void* (*func)()){ //Must be a function
    FOR FUTURE USAGE 
-}*/
+}
 
-template<class T> void PID<T>::setOutput(Heater* obj, void (Heater::*func)(int)){
+template <typename T> void PID<T>::setOutput(Heater* obj, void (Heater::*func)(int)){
    updateFunction = func; 
    updateObject = obj;
 }
 
-template<class T> void* PID<T>::getSetpointSource(){
+template <typename T> void* PID<T>::getSetpointSource(){
   return setSource;
 }
 
-template<class T> void* PID<T>::getSensorSource(){
+template <typename T> void* PID<T>::getSensorSource(){
   return sensorSource;
 }
 
 
 //Calculate error and return response
 //Kp = [0], Ki = [1], Kd = [2], sum = [3], lastValue = [4]
-template<class T> int PID<T>::calculate(float setpoint, float output, float* K,int dt){
+template <typename T> int PID<T>::calculate(float setpoint, float output, float* K,int dt){
     float error = (output - setpoint);
     K[3] += error;
     float result = error*K[0] + K[3]*K[1] + (error-K[4])/dt*K[2];
@@ -75,7 +76,7 @@ template<class T> int PID<T>::calculate(float setpoint, float output, float* K,i
     return result;
 }
 
-template<class T> void PID<T>::update(unsigned int dt){
+template <typename T> void PID<T>::update(unsigned int dt){
   (updateObject->*updateFunction)(calculate(*(float*)setSource,*(float*)sensorSource,K,dt));
-}
+}*/
 
