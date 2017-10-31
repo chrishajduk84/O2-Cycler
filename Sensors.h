@@ -5,8 +5,20 @@
 #include <math.h>
 #include <Adafruit_MAX31855.h>
 
+typedef struct _cartridgeSensors{
+  float pAbs;
+  float pGauge;
+  float temperature;
+  float flow;
+  float tFlow;
+  float O2;
+  float O2Temp;
+  float O2Comp;
+  float heaterCurrent;
+} CartridgeSensors;
+
 class Sensors {
-	static unsigned int *pP_Abs, *pP_Gauge, *pTherm, *pFlow, *pTFlow, *pO2, *pO2Therm, *pHeaterCurrent;
+	unsigned int *pP_Abs, *pP_Gauge, *pTherm, *pFlow, *pTFlow, *pO2, *pO2Therm, *pHeaterCurrent;
 	const double THERM_A = 0.001129241;
 	const double THERM_B = 0.0002341077;
 	const double THERM_C = 0.00000008775468;
@@ -16,8 +28,9 @@ class Sensors {
 	const double C0 = -(C3*pow(20, 3) + C2*pow(20, 1) + C1*20);
 	float THERM_RESIST = 0.0;
   Adafruit_MAX31855 thermocouple;
+  CartridgeSensors csData;
+  
 	public:
-	float valP_Abs, valP_Gauge, valTherm, valFlow, valTFlow, valO2, valO2Therm, valO2Comp, valHeaterCurrent = 0;
 	Sensors (int);
 	float getP_Abs();
 	void printP_Abs();
@@ -37,6 +50,8 @@ class Sensors {
 	void printO2Comp();
 	float getHeaterCurrent();
 	void printHeaterCurrent();
+  CartridgeSensors* getSensorData();
+  void updateSensors();
 };
 
 

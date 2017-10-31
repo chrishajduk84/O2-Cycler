@@ -16,7 +16,7 @@ Cartridge* Cartridge::getById(unsigned int id){
         return 0;
 }
 
-Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD){
+Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD),sensors(id-1){
     //Assign a reference in a static array
     if (id <= NUM_CARTRIDGES){
         if (!cList[id-1]){
@@ -28,9 +28,10 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
         }
 
         heaterPID.setSetpointSource(&DEFAULT_VALUE);
-        heaterPID.setSensorSource(&DEFAULT_VALUE);
+        heaterPID.setSensorSource(&sensors.getSensorData()->temperature);
         heaterPID.setOutput(&heater,&heater.setPWM);
-
+        //heaterPID.setActive(PID::OFF);
+        
     //Do things with the queue?
     }
 }
@@ -51,7 +52,7 @@ void Cartridge::setTestQueue(TestQueue* tq){
 
 void Cartridge::update(){
     //Update Sensor Data
-    
+    sensors.updateSensors();
     
     //Update TestQueue
     currentTest = tQueue.getCurrentTest();

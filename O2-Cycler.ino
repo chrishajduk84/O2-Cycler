@@ -68,7 +68,6 @@ void loop(){
         cartridges[i]->update();
                 
     }
-    
     //Update Display if available
 }
 

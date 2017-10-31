@@ -13,50 +13,64 @@ Sensors::Sensors(int sensorIndex):thermocouple(*pTherm){
 }
 
 float Sensors::getP_Abs(){
-	valP_Abs = (analogRead(*pP_Abs)-91.80193)/27.3;
-  return valP_Abs;
+	csData.pAbs = (analogRead(*pP_Abs)-91.80193)/27.3;
+  return csData.pAbs;
 }
 
 float Sensors::getP_Gauge(){
-	valP_Gauge = ((analogRead(*pP_Gauge)/1023.0)-0.04)/(0.009/0.145038);
-  return valP_Gauge;
+	csData.pGauge = ((analogRead(*pP_Gauge)/1023.0)-0.04)/(0.009/0.145038);
+  return csData.pGauge;
 }
 
 float Sensors::getTherm(){
-	valTherm = thermocouple.readCelsius();
-  return valTherm;
+	csData.temperature = thermocouple.readCelsius();
+  return csData.temperature;
 }
 
 float Sensors::getFlow(){
-	valFlow = (analogRead(*pFlow)-102)/410.0;
-  return valFlow;
+	csData.flow = (analogRead(*pFlow)-102)/410.0;
+  return csData.flow;
 }
 
 float Sensors::getTFlow(){
-	valTFlow = ((analogRead(*pTFlow)/204.6)-1.2)/0.96;
-  return valTFlow;
+	csData.tFlow = ((analogRead(*pTFlow)/204.6)-1.2)/0.96;
+  return csData.tFlow;
 }
 
 float Sensors::getO2(){
-	valO2 = (analogRead(*pO2)/(204.6*38.45*0.000585));
-  return valO2;
+	csData.O2 = (analogRead(*pO2)/(204.6*38.45*0.000585));
+  return csData.O2;
 }
 
 float Sensors::getO2Therm(){
 	//THERM_RESIST = 24900*((V3_3/(analogRead(*pO2Therm)/204.6))-1);
-	valO2Therm = (1.0/(THERM_A + THERM_B*log(THERM_RESIST) + THERM_C*pow(log(THERM_RESIST), 3))) - 273.15;
-  return valO2Therm;
+	csData.O2Temp = (1.0/(THERM_A + THERM_B*log(THERM_RESIST) + THERM_C*pow(log(THERM_RESIST), 3))) - 273.15;
+  return csData.O2Temp;
 }
 
 float Sensors::getO2Comp(){
-	valO2 = (analogRead(*pO2)/(204.6*38.45*0.000585));
+	float valO2 = getO2();
 	float O2Therm = getO2Therm();
-	valO2Comp = valO2 + C3*pow(O2Therm, 3) + C2*pow(O2Therm, 2) + C1*O2Therm + C0;
-  return valO2Comp;
+	csData.O2Comp = valO2 + C3*pow(O2Therm, 3) + C2*pow(O2Therm, 2) + C1*O2Therm + C0;
+  return csData.O2Comp;
 }
 
 float Sensors::getHeaterCurrent(){
-	valHeaterCurrent = analogRead(*pHeaterCurrent)/(204.6*200*0.01);
-  return valHeaterCurrent;
+	csData.heaterCurrent = analogRead(*pHeaterCurrent)/(204.6*200*0.01);
+  return csData.heaterCurrent;
+}
+
+CartridgeSensors* Sensors::getSensorData(){
+  return &csData;
+}
+
+void Sensors::updateSensors(){
+  getP_Abs();
+  getP_Gauge();
+  getTherm();
+  getFlow();
+  getTFlow();
+  getO2Comp();;
+  getHeaterCurrent();
 }
 

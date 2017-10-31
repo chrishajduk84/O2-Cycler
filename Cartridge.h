@@ -7,6 +7,7 @@
 #include "Pump.h"
 #include "TestQueue.h"
 #include "PID.h"
+#include "Sensors.h"
 
 #define HEATER_UPDATE_PERIOD 1000
 
@@ -23,6 +24,7 @@ class Cartridge{
     Valve vC; //3 Way
     Pump pA;    //Pressure
     Pump pB;    //Vacuum
+    Sensors sensors; //All Sensors
     TestQueue tQueue;
     static Cartridge* getById(unsigned int id);
     Cartridge(unsigned int id);
