@@ -40,10 +40,10 @@ TestData* Test::getTestData(){
   return &mData;
 }
 
-bool Test::update(TestSetpoints* sensorData){
+bool Test::update(CartridgeSensors* sensorData){
     //Check if test settings need to be changed (new test in the queue?)
     if (cycle > mSettings.cycles){
-      return false; //Destroy current test object, alternatively raise a flag
+      return false; //Destroy current test object, alternatively raise a flag -Currently raising a flag
     }
     
     //Update Setpoints

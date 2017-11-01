@@ -2,6 +2,7 @@
 #define TEST_H
 
 #include "PID.h"
+#include "Sensors.h"
 
 #define HEATER_UPDATE 1000
 #define PUMP_UPDATE 200
@@ -65,7 +66,7 @@ class Test{
   TestParameters* getTestParameters();
   TestSetpoints* getTestSetpoints();
   TestData* getTestData();
-  bool update(TestSetpoints* sensorData);
+  bool update(CartridgeSensors* sensorData);
 };
 
 
