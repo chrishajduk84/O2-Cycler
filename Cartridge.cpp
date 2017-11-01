@@ -28,7 +28,6 @@ Cartridge::Cartridge(unsigned int id):heater(id-1,heaterPinout[id-1]),vA(vAPinou
             exit(1);
         }
 
-        heaterPID.setSetpointSource(&DEFAULT_VALUE);
         heaterPID.setSensorSource(&cartridgeSensors.getSensorData()->temperature);
         heaterPID.setOutput(&heater,&heater.setPWM);
         //heaterPID.setActive(PID::OFF);
@@ -49,6 +48,8 @@ Cartridge::~Cartridge(){
 
 void Cartridge::setTestQueue(TestQueue* tq){
   tQueue = *tq;
+  currentTest = tQueue.getCurrentTest();
+  heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
 }
 
 void Cartridge::update(){
@@ -58,12 +59,13 @@ void Cartridge::update(){
     //Update TestQueue
     currentTest = tQueue.getCurrentTest();
     //TestSetpoints sensors;
-    //if (!currentTest->update(&cartridgeSensors)){
-      //Start new test and switch control systems
-      //tQueue.pop();
-      //currentTest = tQueue.getCurrentTest();
-      //Serial.println(cartridgeSensors.getSensorData()->temperature);
-    //}
+    if (!currentTest->update(cartridgeSensors.getSensorData())){
+      delete tQueue.pop(); //Delete Previous Test
+      currentTest = tQueue.getCurrentTest(); //Start new test
+
+      //and switch control systems
+      heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
+    }
 
     //Update Control Systems
     heaterPID.update(millis() - lastLoopTime);
