@@ -7,19 +7,32 @@
 //unsigned int mUpdatePeriod[MAX_CONTROLLERS];
 //long timer = 0;
 //PID* controllers[MAX_CONTROLLERS];
+unsigned int controllerCount;
 
 ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
 {
-    ControllerItem* list = controllerList;
-    while (list){
-        if (list->updatePeriod >= timer - list->lastTime){
-                list->controller->update(list->updatePeriod);
-                list->lastTime = timer;
-        }
-        list = list->next;
+    //unsigned int a[3]= {0,0,0};
+    struct ControllerItem<Heater>* list = controllerList;
+    for (int i = 0; i < controllerCount; i++){
+//      if (list->initialized){
+//          if (list->updatePeriod <= (timer - list->lastTime)){
+//                list->controller->update(list->updatePeriod);
+//                list->lastTime = timer;
+//                //a[i] = 2;
+//          }
+//          else {
+//            //a[i] = 1;
+//          }
+//      
+//      }
+      list = list->next;
+      //Serial.println(i);
     }
     timer += 1;
-    Serial.println(timer);
+    //char buf[50];
+    //sprintf(buf,"%u,%u,%u, %u",(unsigned int)a[0],(unsigned int)a[1],(unsigned int)a[2], controllerCount);
+    //Serial.println(buf);
+    //Serial.println(controllerCount);
 }
 
 //Non-static

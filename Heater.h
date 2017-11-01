@@ -14,7 +14,7 @@ class Heater{
     
 
     public:
-    bool pwm;
+    bool pwm = false;
     int duty;
     static unsigned int listLength;
     static Heater* heaterList[NUM_CARTRIDGES];

@@ -24,7 +24,7 @@ class Cartridge{
     Valve vC; //3 Way
     Pump pA;    //Pressure
     Pump pB;    //Vacuum
-    Sensors sensors; //All Sensors
+    Sensors cartridgeSensors; //All Sensors
     TestQueue tQueue;
     static Cartridge* getById(unsigned int id);
     Cartridge(unsigned int id);

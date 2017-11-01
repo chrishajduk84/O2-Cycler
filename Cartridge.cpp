@@ -6,7 +6,8 @@ Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
 //TODO:Temporary
-float DEFAULT_VALUE = 0;
+float DEFAULT_VALUE = 80;
+float DEFAULT_VALUE2 = 22;
 long lastLoopTime = 0;
 
 Cartridge* Cartridge::getById(unsigned int id){
@@ -16,7 +17,7 @@ Cartridge* Cartridge::getById(unsigned int id){
         return 0;
 }
 
-Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD),sensors(id-1){
+Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD),cartridgeSensors(id-1){
     //Assign a reference in a static array
     if (id <= NUM_CARTRIDGES){
         if (!cList[id-1]){
@@ -28,7 +29,7 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
         }
 
         heaterPID.setSetpointSource(&DEFAULT_VALUE);
-        heaterPID.setSensorSource(&sensors.getSensorData()->temperature);
+        heaterPID.setSensorSource(&cartridgeSensors.getSensorData()->temperature);
         heaterPID.setOutput(&heater,&heater.setPWM);
         //heaterPID.setActive(PID::OFF);
         
@@ -52,17 +53,17 @@ void Cartridge::setTestQueue(TestQueue* tq){
 
 void Cartridge::update(){
     //Update Sensor Data
-    sensors.updateSensors();
+    cartridgeSensors.updateSensors();
     
     //Update TestQueue
     currentTest = tQueue.getCurrentTest();
-    TestSetpoints sensors;
-    if (!currentTest->update(&sensors)){
+    //TestSetpoints sensors;
+    //if (!currentTest->update(&cartridgeSensors)){
       //Start new test and switch control systems
-      tQueue.pop();
-      currentTest = tQueue.getCurrentTest();
-      heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
-    }
+      //tQueue.pop();
+      //currentTest = tQueue.getCurrentTest();
+      //Serial.println(cartridgeSensors.getSensorData()->temperature);
+    //}
 
     //Update Control Systems
     heaterPID.update(millis() - lastLoopTime);

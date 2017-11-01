@@ -10,16 +10,21 @@ Heater* Heater::heaterList[NUM_CARTRIDGES];
 long int timer = 0;
 ISR(TIMER0_COMPA_vect)   // timer compare interrupt service routine
 {
+  String x = "HEAT ";
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
       if (timer%100 < Heater::heaterList[i]->duty){
         Heater::heaterList[i]->toggle(true);
+        x+="ON";
       }
       else{
         Heater::heaterList[i]->toggle(false);
+        x+="OFF";
       }
     }
+    x+="NOPE";
   }
+  //Serial.println(x);
   timer += 1;
 }
 /****************************/
@@ -104,7 +109,8 @@ bool Heater::getState(){
     return state;
 }
 
-void Heater::setPWM(int _duty){ //Hacks not really PWM
+void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
+  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
   pwm = true;
   duty = _duty;
 }

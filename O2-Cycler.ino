@@ -15,16 +15,25 @@ void setup(){
     Serial.begin(115200);
 
     /******Setup for Timer0 Interrupt function******/
-    TCCR1A = 0;// set entire TCCR1A register to 0
-    TCCR1B = 0;// same for TCCR1B
-    TCNT1  = 0;//initialize counter value to 0
+    //TCCR1A = 0;// set entire TCCR1A register to 0
+    //TCCR1B = 0;// same for TCCR1B
+    //TCNT1  = 0;//initialize counter value to 0
     // set compare match register for 1hz increments
-    OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+    //OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
     TIMSK0 |= (1 << OCIE0A);
     /***********************************************/
+    /******Setup for Timer1 Interrupt function******/
+    //TCCR1A = 0;// set entire TCCR1A register to 0
+    //TCCR1B = 0;// same for TCCR1B
+    //TCNT1  = 0;//initialize counter value to 0
+    // set compare match register for 1hz increments
+    //OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
+    TIMSK1 |= (1 << OCIE1A);
+    /***********************************************/
+
   
     //Check how many cartridges are loaded
-
+    
     //Initialize and Check Sensors and Status for each cartridge (Get a baseline for any sensors that
     //are necessary). Create Cartridge Object.
     for (int i = 0; i < NUM_CARTRIDGES; i++){
@@ -32,6 +41,7 @@ void setup(){
     }
     
     //Make a list of common or possible tests to complete
+    
     
     //How long is the total experiment?
     for (int i = 0; i < NUM_CARTRIDGES; i++){
@@ -66,7 +76,7 @@ void loop(){
         
         //Control Decisions
         cartridges[i]->update();
-                
+        
     }
     //Update Display if available
 }
@@ -95,4 +105,3 @@ String questionValue(String question){
   Serial.println(tmp);
   return tmp;
 }
-
