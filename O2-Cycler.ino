@@ -33,11 +33,28 @@ void setup(){
 
   
     //Check how many cartridges are loaded
+    byte activeCartridges = 0;
+    
+    for (int i = 0; i < NUM_CARTRIDGES; i++){
+      Sensors *tempS = new Sensors(i);
+      Heater *tempH = new Heater(31 + i*2);
+      tempH->toggle(1);
+      delay(5);
+      if (tempS->getHeaterCurrent()){
+        activeCartridges += (1 << i);
+      }
+      tempH->toggle();
+      delete tempS;
+      delete tempH;
+    }
+
     
     //Initialize and Check Sensors and Status for each cartridge (Get a baseline for any sensors that
     //are necessary). Create Cartridge Object.
     for (int i = 0; i < NUM_CARTRIDGES; i++){
-      cartridges[i] = new Cartridge(i+1);
+      if ((activeCartridges >> i) & 1){
+        cartridges[i] = new Cartridge(i+1);
+      }
     }
     
     //Make a list of common or possible tests to complete
