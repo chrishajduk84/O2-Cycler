@@ -9,12 +9,6 @@ TestQueue::TestQueue(){}
 
 TestQueue::TestQueue(Test* t){
     this->addTest(t);
-    /*TestWrapper tw = new TestWrapper(); 
-    tw.test = &t;
-    tw.next = 0;  
-    begin = &tw;
-    end = &tw;
-    queueCounter++;*/
 }
 
 void TestQueue::addTest(Test* t){
@@ -40,6 +34,11 @@ Test* TestQueue::pop(){
     //Return       
     return nextTest;
 }
+
+Test* TestQueue::getCurrentTest(){ //Does not pop from TestQueue
+  return begin->test;
+}
+
 int TestQueue::size(){
     return queueCounter;
 }
