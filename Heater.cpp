@@ -3,44 +3,48 @@
 
 //These are static!!!
 unsigned int Heater::pinList[NUM_CARTRIDGES];
-unsigned int Heater::listLength;
+unsigned int Heater::listLength = 0;
+byte Heater::activeHeaters = 0;
 Heater* Heater::heaterList[NUM_CARTRIDGES];
 
 /* NOTE: THIS IS A PWM HACK */
 long int timer = 0;
 ISR(TIMER0_COMPA_vect)   // timer compare interrupt service routine
 {
-  String x = "HEAT ";
-  for (int i = 0; i < Heater::listLength; i++){
-    if (Heater::heaterList[i]->pwm){
-      if (timer%100 < Heater::heaterList[i]->duty){
-        Heater::heaterList[i]->toggle(true);
-        x+="ON";
-      }
-      else{
-        Heater::heaterList[i]->toggle(false);
-        x+="OFF";
+//  String x = "HEAT ";
+  for (int i = 0; i < NUM_CARTRIDGES; i++){
+    if ((Heater::activeHeaters >> i) & 1){
+      if (Heater::heaterList[i]->pwm){
+        if (timer%100 < Heater::heaterList[i]->duty){
+          Heater::heaterList[i]->toggle(true);
+//          x+="ON";
+        }
+        else{
+          Heater::heaterList[i]->toggle(false);
+//          x+="OFF";
+        }
       }
     }
-    x+="NOPE";
+//    x+="NOPE";
   }
-  //Serial.println(x);
+//  Serial.println(x);
+//  Serial.println(Heater::activeHeaters);
   timer += 1;
 }
 /****************************/
 
-Heater::Heater(unsigned int _togglePin){
+Heater::Heater(unsigned int index, unsigned int _togglePin){
     //Assign the heating pin to the object
-    for (int i = 0; i < listLength; i++){
-        if (pinList[i] == _togglePin){
-            //Serial.println("Initialized Heater Already Exists!");
-            exit(1);
-        }
-    }
+//    for (int i = 0; i < listLength; i++){
+//        if (pinList[i] == _togglePin){
+//            //Serial.println("Initialized Heater Already Exists!");
+//            exit(1);
+//        }
+//    }
     //If the heating pin hasn't already been initialized, add it to the list
-    heaterList[listLength] = this;
+    heaterList[index] = this;
     pinMode(_togglePin, OUTPUT);
-    pinList[listLength++] = togglePin = _togglePin;
+    pinList[index] = togglePin = _togglePin;
 }
 
 /*Heater::Heater(unsigned int _togglePi, unsigned int _currentPin){
@@ -110,7 +114,7 @@ bool Heater::getState(){
 }
 
 void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
-  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
+//  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
   pwm = true;
   duty = _duty;
 }

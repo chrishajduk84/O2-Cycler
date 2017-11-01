@@ -55,11 +55,12 @@ void Cartridge::setTestQueue(TestQueue* tq){
 void Cartridge::update(){
     //Update Sensor Data
     cartridgeSensors.updateSensors();
+    CartridgeSensors* cs = cartridgeSensors.getSensorData();
     
-    //Update TestQueue
+//  Update TestQueue
     currentTest = tQueue.getCurrentTest();
-    //TestSetpoints sensors;
-    if (!currentTest->update(cartridgeSensors.getSensorData())){
+    TestSetpoints sensors;
+    if (!currentTest->update(cs)){
       delete tQueue.pop(); //Delete Previous Test
       currentTest = tQueue.getCurrentTest(); //Start new test
 
@@ -67,7 +68,12 @@ void Cartridge::update(){
       heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
     }
 
+    Serial.println(cs->temperature);
+    Serial.println(cs->heaterCurrent);
+
+    
     //Update Control Systems
     heaterPID.update(millis() - lastLoopTime);
     lastLoopTime = millis();
+
 }

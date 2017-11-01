@@ -9,6 +9,7 @@ int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (ca
 
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
+byte activeCartridges = 0;
 
 void setup(){ 
     //Hardware Setup
@@ -33,11 +34,10 @@ void setup(){
 
   
     //Check how many cartridges are loaded
-    byte activeCartridges = 0;
     
     for (int i = 0; i < NUM_CARTRIDGES; i++){
       Sensors *tempS = new Sensors(i);
-      Heater *tempH = new Heater(31 + i*2);
+      Heater *tempH = new Heater(i,31 + i*2);
       tempH->toggle(1);
       delay(5);
       if (tempS->getHeaterCurrent()){
@@ -48,7 +48,7 @@ void setup(){
       delete tempH;
     }
 
-    
+    activeCartridges = 1;
     //Initialize and Check Sensors and Status for each cartridge (Get a baseline for any sensors that
     //are necessary). Create Cartridge Object.
     for (int i = 0; i < NUM_CARTRIDGES; i++){
@@ -56,22 +56,27 @@ void setup(){
         cartridges[i] = new Cartridge(i+1);
       }
     }
+    Heater::activeHeaters = activeCartridges;
+    Serial.println(activeCartridges);
     
     //Make a list of common or possible tests to complete
     
     
     //How long is the total experiment?
     for (int i = 0; i < NUM_CARTRIDGES; i++){
-      char buf[70];sprintf(buf,"Cartridge %d: How many times will the parameters change?", i+1);
-      Serial.print(buf);
-      String runtime = "";
-      while (runtime == ""){if (Serial.available() > 0)runtime = Serial.readString();}
-      totalTime[i] = runtime.toInt();
-      Serial.println(totalTime[i]);
+      if ((activeCartridges >> i) & 1){
+        char buf[70];sprintf(buf,"Cartridge %d: How many times will the parameters change?", i+1);
+        Serial.print(buf);
+        String runtime = "";
+        while (runtime == ""){if (Serial.available() > 0)runtime = Serial.readString();}
+        totalTime[i] = runtime.toInt();
+        Serial.println(totalTime[i]);
+      }
     }
     
     //Generate Test Objects - User chooses the tests to run
     for (int i = 0; i < NUM_CARTRIDGES; i++){
+      if ((activeCartridges >> i) & 1){
         for (int t = 0; t < totalTime[i]; t++){
             TestParameters* tp = new TestParameters();
             TestData* td = new TestData();
@@ -81,19 +86,21 @@ void setup(){
             tests[i] = new TestQueue(tes);
             cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
         }
+      }
     }
     //"Please start recording data!"
 }
 
 void loop(){
     for (int i = 0; i < NUM_CARTRIDGES; i++){
+      if ((activeCartridges >> i) & 1){
         //Data
         //readSensors();
         //outputData();
         
         //Control Decisions
         cartridges[i]->update();
-        
+      }
     }
     //Update Display if available
 }

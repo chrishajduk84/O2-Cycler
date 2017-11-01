@@ -14,11 +14,12 @@ class Heater{
     
 
     public:
+    static byte activeHeaters;
     bool pwm = false;
     int duty;
     static unsigned int listLength;
     static Heater* heaterList[NUM_CARTRIDGES];
-    Heater(unsigned int _togglePin);
+    Heater(unsigned int index, unsigned int _togglePin);
     ~Heater();
     float getVoltage();
     float getCurrent();

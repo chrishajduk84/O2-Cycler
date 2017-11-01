@@ -1,7 +1,7 @@
 #include "Sensors.h"
 #include <SPI.h>
 
-Sensors::Sensors(int sensorIndex):thermocouple(*pTherm){
+Sensors::Sensors(int sensorIndex):thermocouple(*(ThermPinout+sensorIndex)){
 	pP_Abs = (P_AbsPinout + sensorIndex);
 	pP_Gauge = (P_GaugePinout + sensorIndex);
 	pTherm = (ThermPinout + sensorIndex);
@@ -11,6 +11,8 @@ Sensors::Sensors(int sensorIndex):thermocouple(*pTherm){
 	pO2Therm = &O2ThermPinout;
 	pHeaterCurrent = (HeaterCurrentPinout + sensorIndex);
 }
+
+//Sensor::
 
 float Sensors::getP_Abs(){
 	csData.pAbs = (analogRead(*pP_Abs)-91.80193)/27.3;
