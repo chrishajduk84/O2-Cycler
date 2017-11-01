@@ -17,7 +17,7 @@ Cartridge* Cartridge::getById(unsigned int id){
         return 0;
 }
 
-Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD),cartridgeSensors(id-1){
+Cartridge::Cartridge(unsigned int id):heater(id-1,heaterPinout[id-1]),vA(vAPinout[id-1]),vB(vBPinout[id-1]),vC(vCPinout[id-1]),pA(pAPinout[id-1]),pB(pBPinout[id-1]),tQueue(),heaterPID(HEATER_UPDATE_PERIOD),cartridgeSensors(id-1){
     //Assign a reference in a static array
     if (id <= NUM_CARTRIDGES){
         if (!cList[id-1]){
