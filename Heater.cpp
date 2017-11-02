@@ -110,7 +110,7 @@ bool Heater::getState(){
 }
 
 void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
-  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
+//  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
   pwm = true;
   duty = _duty;
 }

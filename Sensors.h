@@ -31,7 +31,7 @@ class Sensors {
   CartridgeSensors csData;
   
 	public:
-	Sensors (int);
+	Sensors (int sensorIndex);
 	float getP_Abs();
 	void printP_Abs();
 	float getP_Gauge();

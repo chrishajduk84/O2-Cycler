@@ -13,6 +13,7 @@ Cartridge* cartridges[NUM_CARTRIDGES];
 void setup(){ 
     //Hardware Setup
     Serial.begin(115200);
+    while(!Serial){delay(1);} //Wait for serial interface to initialize
 
     /******Setup for Timer0 Interrupt function******/
     //TCCR1A = 0;// set entire TCCR1A register to 0
