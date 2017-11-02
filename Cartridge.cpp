@@ -9,7 +9,6 @@ unsigned int Cartridge::listLength;
 float DEFAULT_VALUE = 80;
 float DEFAULT_VALUE2 = 22;
 long lastLoopTime = 0;
-unsigned long dataTime = 0;
 
 Cartridge* Cartridge::getById(unsigned int id){
     if (id > 0)
@@ -72,12 +71,9 @@ void Cartridge::update(){
     heaterPID.update(millis() - lastLoopTime);
     lastLoopTime = millis();
 
-    if ((millis() - dataTime) > 1000){
-      Serial.println (cartridgeSensors.getSensorData()->temperature);
-      
-      dataTime = millis();
-    }
-    
 }
 
+Test Cartridge::getCurrentTest(){
+  return *currentTest;
+}
 

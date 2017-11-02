@@ -6,6 +6,7 @@
 
 TestQueue* tests[NUM_CARTRIDGES];
 int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (cartridge independent)
+unsigned long dataTime = 0;
 
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
@@ -74,12 +75,25 @@ void loop(){
         //Data
         //readSensors();
         //outputData();
-        
+    
         //Control Decisions
         cartridges[i]->update();
         
     }
     //Update Display if available
+    
+    if ((millis() - dataTime) > 1000){
+      for (int i = 0; i < NUM_CARTRIDGES; i++){
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+      }
+      Serial.println(" ");
+      
+      dataTime = millis();
+    }
 }
 
 void userInputTest(int cartridgeID, int timeint, TestParameters* tp, TestData* var){

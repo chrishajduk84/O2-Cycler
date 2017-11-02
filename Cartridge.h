@@ -30,7 +30,8 @@ class Cartridge{
     Cartridge(unsigned int id);
     ~Cartridge();
     void setTestQueue(TestQueue* tq);
-    void update(); 
+    void update();
+    Test getCurrentTest();
 };
 
 #endif
