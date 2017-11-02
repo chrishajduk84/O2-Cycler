@@ -27,11 +27,14 @@ class Sensors {
 	const double C3 = -0.000004333;
 	const double C0 = -(C3*pow(20, 3) + C2*pow(20, 1) + C1*20);
 	float THERM_RESIST = 0.0;
-  Adafruit_MAX31855 thermocouple;
+  Adafruit_MAX31855* thermocouple;
   CartridgeSensors csData;
   
 	public:
+
 	Sensors (int sensorIndex);
+  ~Sensors();
+
 	float getP_Abs();
 	void printP_Abs();
 	float getP_Gauge();

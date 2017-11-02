@@ -1,7 +1,7 @@
 #include "Sensors.h"
 #include <SPI.h>
 
-Sensors::Sensors(int sensorIndex):thermocouple(*pTherm){
+Sensors::Sensors(int sensorIndex){
 	pP_Abs = (P_AbsPinout + sensorIndex);
 	pP_Gauge = (P_GaugePinout + sensorIndex);
 	pTherm = (ThermPinout + sensorIndex);
@@ -10,6 +10,12 @@ Sensors::Sensors(int sensorIndex):thermocouple(*pTherm){
 	pO2 = &O2Pinout;
 	pO2Therm = &O2ThermPinout;
 	pHeaterCurrent = (HeaterCurrentPinout + sensorIndex);
+
+  thermocouple = new Adafruit_MAX31855(*pTherm);
+}
+
+Sensors::~Sensors(){
+  delete thermocouple;
 }
 
 float Sensors::getP_Abs(){
@@ -23,7 +29,7 @@ float Sensors::getP_Gauge(){
 }
 
 float Sensors::getTherm(){
-	csData.temperature = thermocouple.readCelsius();
+	csData.temperature = thermocouple->readCelsius();
   return csData.temperature;
 }
 
