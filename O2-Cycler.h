@@ -6,9 +6,9 @@
 #include <Arduino.h>
 
 static unsigned int heaterPinout[NUM_CARTRIDGES] = {31,33,35};
-static unsigned int vAPinout[NUM_CARTRIDGES] = {1,2,3};
-static unsigned int vBPinout[NUM_CARTRIDGES] = {1,2,3};
-static unsigned int vCPinout[NUM_CARTRIDGES] = {1,2,3};
+static unsigned int vAPinout[NUM_CARTRIDGES] = {11,10,9};
+static unsigned int vBPinout[NUM_CARTRIDGES] = {7,5,3};
+static unsigned int vCPinout[NUM_CARTRIDGES] = {6,4,46};
 static unsigned int pAPinout[NUM_CARTRIDGES] = {1,2,3};
 static unsigned int pBPinout[NUM_CARTRIDGES] = {1,2,3};
 static unsigned int P_AbsPinout[NUM_CARTRIDGES] = {9,8,7};

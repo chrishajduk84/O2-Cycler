@@ -44,8 +44,7 @@ void setup(){
     }
     
     //Make a list of common or possible tests to complete
-    
-    
+
     //How long is the total experiment?
     for (int i = 0; i < NUM_CARTRIDGES; i++){
       char buf[70];sprintf(buf,"Cartridge %d: How many times will the parameters change?", i+1);
@@ -87,7 +86,7 @@ void loop(){
     if ((millis() - dataTime) > 1000){
       Serial.print((millis()-setupTime)/1000.0);Serial.print(", ");
       for (int i = 0; i < NUM_CARTRIDGES; i++){
-          Serial.print(cartridges[i]->getCurrentTest().getTestData()->state);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestData()->state);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
