@@ -60,7 +60,7 @@ bool Test::update(CartridgeSensors* sensorData){
         //Update Setpoints for ABSORPTION - Temperature, Pressure
         mSetpoints.temperature = mSettings.absorbTemp;
         mSetpoints.inPressure = mSettings.inPressure;
-        mSetpoints.outPressure = 0;
+        mSetpoints.outPressure = 14.5;
       }
     }
     else if (!desorbState){
