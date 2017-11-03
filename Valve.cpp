@@ -22,11 +22,16 @@ void Valve::toggle(){
 }
 
 void Valve::toggle(bool _state){
+    if (_state = state) return; //No need to redo this function if the desired state is already in place
+  
     if (_state){ //ON
         analogWrite(togglePin, 255);
-        unsigned long lastTime = millis();
-        while(millis() - lastTime < (unsigned long)1000*64);
+        long int tempTime = myMillis();
+        long int diff = 0;
+        delay(3000);
+//        while(diff < 500){diff = myMillis() - tempTime;}
         analogWrite(togglePin, 127);
+//        Serial.println("NOW");
     }
     else{ //OFF
         analogWrite(togglePin,0); 

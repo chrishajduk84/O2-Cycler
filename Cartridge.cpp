@@ -5,6 +5,7 @@
 Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
+
 long lastLoopTime = 0;
 
 Cartridge* Cartridge::getById(unsigned int id){
@@ -35,6 +36,7 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
         pumpBPID.setOutput(&pB,&pB.setPWM);
         pumpBPID.setGain(pumpBK);
         cID = id;
+        
         //Do things with the queue?
     }
 }
@@ -58,7 +60,7 @@ void Cartridge::setTestQueue(TestQueue* tq){
 }
 
 void Cartridge::update(){
-//    Serial.print("Cart:");Serial.println(cID);
+    Serial.print("Cart:");Serial.println(cID);
     //Update Sensor Data
     cartridgeSensors.updateSensors();
     
@@ -75,8 +77,18 @@ void Cartridge::update(){
       pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
     }
     //Update Control Systems
-    heaterPID.update(millis() - lastLoopTime);
-    pumpAPID.update(millis() - lastLoopTime);
-    pumpBPID.update(millis() - lastLoopTime);
-    lastLoopTime = millis();
+    heaterPID.update(myMillis() - lastLoopTime);
+    pumpAPID.update(myMillis() - lastLoopTime);
+    pumpBPID.update(myMillis() - lastLoopTime);
+    if (currentTest->getTestSetpoints()->desorbState){
+      pA.toggle(true);
+      pB.toggle(false);
+      pC.toggle(true);
+    } else{
+      pA.toggle(false);
+      pB.toggle(true);
+      pC.toggle(false);
+    }
+    
+    lastLoopTime = myMillis();
 }
