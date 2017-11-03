@@ -33,7 +33,8 @@ typedef struct _TestParameters{
 typedef struct _TestSetpoints{
     int cycles;
     float temperature;
-    float pressure;
+    float inPressure;
+    float outPressure;
 } TestSetpoints;
 /*typedef struct _TestSensors{
     float temperature;

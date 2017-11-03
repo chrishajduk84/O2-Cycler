@@ -12,7 +12,6 @@ class Heater{
     unsigned int voltagePin; //To detect what voltage is being used - Optional
     bool state;
     
-
     public:
     bool pwm = false;
     int duty;

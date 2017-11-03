@@ -20,17 +20,8 @@ void setup(){
     //TCNT1  = 0;//initialize counter value to 0
     // set compare match register for 1hz increments
     //OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
-    TIMSK0 |= (1 << OCIE0A);
+    TIMSK5 |= (1 << OCIE5A);
     /***********************************************/
-    /******Setup for Timer1 Interrupt function******/
-    //TCCR1A = 0;// set entire TCCR1A register to 0
-    //TCCR1B = 0;// same for TCCR1B
-    //TCNT1  = 0;//initialize counter value to 0
-    // set compare match register for 1hz increments
-    //OCR1A = 15624;// = (16*10^6) / (1*1024) - 1 (must be <65536)
-    TIMSK1 |= (1 << OCIE1A);
-    /***********************************************/
-
   
     //Check how many cartridges are loaded
     
@@ -104,4 +95,8 @@ String questionValue(String question){
   while (tmp == ""){if (Serial.available() > 0)tmp = Serial.readString();}
   Serial.println(tmp);
   return tmp;
+}
+
+unsigned long int myMillis(){
+  return timer/490.46*1000;
 }
