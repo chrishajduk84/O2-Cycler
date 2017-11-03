@@ -19,8 +19,8 @@ class Cartridge{
     Test* currentTest;
     unsigned int cID;
     float heaterK[5] = {1000,1e-4,1,0,0};
-    float pumpAK[5] = {1000,1e-4,1,0,0};
-    float pumpBK[5] = {1000,1e-4,1,0,0};
+    float pumpAK[5] = {100,1e-4,1,0,0};
+    float pumpBK[5] = {-100,1e-4,1,0,0};
     
     public:
     Heater heater;
