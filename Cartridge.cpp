@@ -91,4 +91,8 @@ void Cartridge::update(){
     }
     
     lastLoopTime = myMillis();
+
+Test Cartridge::getCurrentTest(){
+  return *currentTest;
 }
+

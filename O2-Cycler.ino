@@ -6,6 +6,8 @@
 
 TestQueue* tests[NUM_CARTRIDGES];
 int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (cartridge independent)
+unsigned long dataTime = 0;
+unsigned long setupTime = 0;
 
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
@@ -13,6 +15,7 @@ Cartridge* cartridges[NUM_CARTRIDGES];
 void setup(){ 
     //Hardware Setup
     Serial.begin(115200);
+    while(!Serial){delay(1);} //Wait for serial interface to initialize
 
     /******Setup for Timer0 Interrupt function******/
     //TCCR1A = 0;// set entire TCCR1A register to 0
@@ -32,8 +35,7 @@ void setup(){
     }
     
     //Make a list of common or possible tests to complete
-    
-    
+
     //How long is the total experiment?
     for (int i = 0; i < NUM_CARTRIDGES; i++){
       char buf[70];sprintf(buf,"Cartridge %d: How many times will the parameters change?", i+1);
@@ -57,6 +59,7 @@ void setup(){
         }
     }
     //"Please start recording data!"
+    setupTime = millis();
 }
 
 void loop(){
@@ -64,12 +67,27 @@ void loop(){
         //Data
         //readSensors();
         //outputData();
-        
+    
         //Control Decisions
         cartridges[i]->update();
         
     }
     //Update Display if available
+    
+    if ((millis() - dataTime) > 1000){
+      Serial.print((millis()-setupTime)/1000.0);Serial.print(", ");
+      for (int i = 0; i < NUM_CARTRIDGES; i++){
+        Serial.print(cartridges[i]->getCurrentTest().getTestData()->state);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+      }
+      Serial.println(" ");
+      
+      dataTime = millis();
+    }
 }
 
 void userInputTest(int cartridgeID, int timeint, TestParameters* tp, TestData* var){
