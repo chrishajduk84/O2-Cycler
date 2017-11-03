@@ -7,6 +7,7 @@
 TestQueue* tests[NUM_CARTRIDGES];
 int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (cartridge independent)
 unsigned long dataTime = 0;
+unsigned long setupTime = 0;
 
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
@@ -68,6 +69,7 @@ void setup(){
         }
     }
     //"Please start recording data!"
+    setupTime = millis();
 }
 
 void loop(){
@@ -83,7 +85,9 @@ void loop(){
     //Update Display if available
     
     if ((millis() - dataTime) > 1000){
+      Serial.print((millis()-setupTime)/1000.0);Serial.print(", ");
       for (int i = 0; i < NUM_CARTRIDGES; i++){
+          Serial.print(cartridges[i]->getCurrentTest().getTestData()->state);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
