@@ -75,15 +75,17 @@ void loop(){
     //Update Display if available
     
     if ((myMillis() - dataTime) > 1000){
+      int i = 1;
       Serial.print((myMillis()-setupTime)/1000.0);Serial.print(", ");
-      for (int i = 0; i < NUM_CARTRIDGES; i++){
-        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
+//      for (int i = 0; i < NUM_CARTRIDGES; i++){
+//        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
 //        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
 //        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
-//        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
-      }
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+//      }
+      Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->O2);
       Serial.println(" ");
       
       dataTime = myMillis();

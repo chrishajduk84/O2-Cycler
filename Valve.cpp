@@ -22,7 +22,7 @@ void Valve::toggle(){
 }
 
 void Valve::toggle(bool _state){
-    if (_state = state) return; //No need to redo this function if the desired state is already in place
+    if (_state == state) return; //No need to redo this function if the desired state is already in place
   
     if (_state){ //ON
         analogWrite(togglePin, 255);
