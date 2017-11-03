@@ -14,68 +14,29 @@ struct method_helper {
   typedef void (Tx::*type)(int);
 };
 
-template<class T> class PID;
-
-typedef Heater PLACEHOLDER;
-template<class T> struct ControllerItem { 
-  PID<T>* controller;
-  unsigned int updatePeriod;
-  long lastTime;
-  struct ControllerItem* next;
-  bool initialized = false;
-};
-
 static unsigned long timer;
-static struct ControllerItem<PLACEHOLDER>* controllerList;
-extern unsigned int controllerCount;
 
 template<class T> class PID{
     typename method_helper<T>::type updateFunction;
     T* updateObject;
     float* setSource;
     float* sensorSource;
-    float K[5] = {1000,1e-4,1,0,0};//Kp,Ki,Kd,lastError,Integral
+    float* K;//Kp,Ki,Kd,lastError,Integral
     bool outputSet = false;
     
     public:
-    PID(int updatePeriod){
-      struct ControllerItem<T>* newNode;
-      if (controllerCount == 0){
-        controllerList = new ControllerItem<T>;
-        newNode = controllerList;
-      } else newNode = new ControllerItem<T>;
-      
-      struct ControllerItem<T>* tmp = controllerList;
-      
-      for (int i = 0; i < controllerCount; i++){
-         tmp = tmp->next;
-      }
-      newNode->controller = this;
-      newNode->updatePeriod = updatePeriod;
-      newNode->lastTime = timer;
-      tmp->next = newNode;
-      
-      newNode->initialized = true; //This should be the last thing running in the constructor!!
+    PID(){
       Serial.println("NEWINSTANCE");
-      controllerCount++;
       
     }
-    ~PID(){
-      struct ControllerItem<T>* tmp = controllerList;
-      struct ControllerItem<T>* previous = tmp;
-      for (int i = 0; i < controllerCount; i++){
-        if (tmp->controller = this){
-          previous->next = tmp->next;
-          delete tmp;
-          break;
-        }
-        previous = tmp;
-        tmp = tmp->next;
-      } 
-    }
+    ~PID(){}
     void setSetpointSource(float* sourceData){setSource = sourceData;}
     void setSensorSource(float* sensorData){sensorSource = sensorData;}
     void setOutput(T* obj, typename method_helper<T>::type func){updateFunction = func; updateObject = obj;outputSet = true;}
+    void setGain(float* _K){
+      //Must conform to Kp,Ki,Kd,lastError,Integral
+      K = _K;
+    }
     float* getSetpointSource(){return setSource;}
     float* getSensorSource(){return sensorSource;}
     int calculate(float set, float output, float* constants, int dt){

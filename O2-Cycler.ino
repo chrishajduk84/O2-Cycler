@@ -69,6 +69,7 @@ void setup(){
 }
 
 void loop(){
+//    Serial.println("S");
     for (int i = 0; i < NUM_CARTRIDGES; i++){
         //Data
         //readSensors();
