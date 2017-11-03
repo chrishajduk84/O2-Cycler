@@ -1,4 +1,5 @@
 #include "Heater.h"
+#include "Pump.h"
 #include <stdlib.h>
 
 //These are static!!!
@@ -8,23 +9,31 @@ Heater* Heater::heaterList[NUM_CARTRIDGES];
 
 /* NOTE: THIS IS A PWM HACK */
 long int timer = 0;
-ISR(TIMER0_COMPA_vect)   // timer compare interrupt service routine
+ISR(TIMER5_COMPA_vect)   // timer compare interrupt service routine
 {
-  String x = "HEAT ";
+  /************HEATER****************/
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
       if (timer%100 < Heater::heaterList[i]->duty){
         Heater::heaterList[i]->toggle(true);
-        x+="ON";
       }
       else{
         Heater::heaterList[i]->toggle(false);
-        x+="OFF";
       }
     }
-    x+="NOPE";
   }
-  //Serial.println(x);
+  
+  /************PUMP****************/
+  for (int i = 0; i < Pump::listLength; i++){
+    if (Pump::pumpList[i]->pwm){
+      if (timer%100 < Pump::pumpList[i]->duty){
+        Pump::pumpList[i]->toggle(true);
+      }
+      else{
+        Pump::pumpList[i]->toggle(false);
+      }
+    }
+  }
   timer += 1;
 }
 /****************************/
@@ -110,7 +119,6 @@ bool Heater::getState(){
 }
 
 void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
-//  Serial.print(togglePin);Serial.print(": ");Serial.println(_duty);
   pwm = true;
   duty = _duty;
 }
