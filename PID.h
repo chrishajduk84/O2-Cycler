@@ -14,7 +14,7 @@ struct method_helper {
   typedef void (Tx::*type)(int);
 };
 
-static unsigned long timer;
+extern unsigned long timer;
 
 template<class T> class PID{
     typename method_helper<T>::type updateFunction;
@@ -64,10 +64,10 @@ template<class T> class PID{
     }
     void update(unsigned int dt){
       if (outputSet){
-        Serial.println(*sensorSource);
-        Serial.println(*setSource);
+//        Serial.println(*sensorSource);
+//        Serial.println(*setSource);
         int pidSignal = calculate(*setSource,*sensorSource,K,dt);
-        Serial.println(pidSignal);
+//        Serial.println(pidSignal);
         (updateObject->setPWM(pidSignal));
       }
     }

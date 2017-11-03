@@ -5,9 +5,6 @@
 Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
-//TODO:Temporary
-float DEFAULT_VALUE = 80;
-float DEFAULT_VALUE2 = 22;
 long lastLoopTime = 0;
 
 Cartridge* Cartridge::getById(unsigned int id){
@@ -61,7 +58,7 @@ void Cartridge::setTestQueue(TestQueue* tq){
 }
 
 void Cartridge::update(){
-    Serial.print("Cart:");Serial.println(cID);
+//    Serial.print("Cart:");Serial.println(cID);
     //Update Sensor Data
     cartridgeSensors.updateSensors();
     

@@ -18,6 +18,6 @@ ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
 //      list = list->next;
       //Serial.println(i);
 //    }
-    timer += 1;
+//    timer += 1;
 }
 
