@@ -79,4 +79,10 @@ void Cartridge::update(){
     pumpAPID.update(millis() - lastLoopTime);
     pumpBPID.update(millis() - lastLoopTime);
     lastLoopTime = millis();
+
 }
+
+Test Cartridge::getCurrentTest(){
+  return *currentTest;
+}
+
