@@ -9,7 +9,6 @@ Valve::Valve(unsigned int _togglePin){
         togglePin = _togglePin;
     }
     else{
-        //Serial.println("Improper pin selected!");
         exit(1);
     }
 }
@@ -31,7 +30,6 @@ void Valve::toggle(bool _state){
         delay(3000);
 //        while(diff < 500){diff = myMillis() - tempTime;}
         analogWrite(togglePin, 127);
-//        Serial.println("NOW");
     }
     else{ //OFF
         analogWrite(togglePin,0); 

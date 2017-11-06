@@ -12,7 +12,6 @@ Pump::Pump(unsigned int _togglePin){
     //Assign the heating pin to the object
     for (int i = 0; i < listLength; i++){
         if (pinList[i] == _togglePin){
-            //Serial.println("Initialized Heater Already Exists!");
             exit(1);
         }
     }

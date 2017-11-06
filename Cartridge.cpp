@@ -59,7 +59,6 @@ void Cartridge::setTestQueue(TestQueue* tq){
 }
 
 void Cartridge::update(){
-//    Serial.print("Cart:");Serial.println(cID);
     //Update Sensor Data
     cartridgeSensors.updateSensors();
     
