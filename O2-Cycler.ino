@@ -79,13 +79,25 @@ void loop(){
       Serial.print((myMillis()-setupTime)/1000.0);Serial.print(", ");
 //      for (int i = 0; i < NUM_CARTRIDGES; i++){
 //        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
-//        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
 //        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
+
+        if(cartridges[i]->getCurrentTest().getTestSetpoints()->desorbState){
+          Serial.print("DESORBING");
+        }
+        else {
+          Serial.print("ABSORBING");
+        }
+        Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->inPressure);Serial.print(", ");
+        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->outPressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
-        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
 //      }
-      Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->O2);
+
+              Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2);
       Serial.println(" ");
       
       dataTime = myMillis();
