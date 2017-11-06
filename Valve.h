@@ -7,7 +7,7 @@ class Valve{
     //static unsigned int pinList[NUM_CARTRIDGES];
     //static unsigned int listLength;
     unsigned int togglePin;
-    bool state;
+    bool state = false;
     void setPWMFrequency(int pin, int divisor);
     
     public:

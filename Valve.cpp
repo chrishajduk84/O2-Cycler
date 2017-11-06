@@ -9,7 +9,6 @@ Valve::Valve(unsigned int _togglePin){
         togglePin = _togglePin;
     }
     else{
-        //Serial.println("Improper pin selected!");
         exit(1);
     }
 }
@@ -22,7 +21,7 @@ void Valve::toggle(){
 }
 
 void Valve::toggle(bool _state){
-    if (_state = state) return; //No need to redo this function if the desired state is already in place
+    if (_state == state) return; //No need to redo this function if the desired state is already in place
   
     if (_state){ //ON
         analogWrite(togglePin, 255);
@@ -31,7 +30,6 @@ void Valve::toggle(bool _state){
         delay(3000);
 //        while(diff < 500){diff = myMillis() - tempTime;}
         analogWrite(togglePin, 127);
-//        Serial.println("NOW");
     }
     else{ //OFF
         analogWrite(togglePin,0); 

@@ -35,8 +35,7 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
         pumpBPID.setSensorSource(&cartridgeSensors.getSensorData()->pAbs);//Absolute Pressure Sensor
         pumpBPID.setOutput(&pB,&pB.setPWM);
         pumpBPID.setGain(pumpBK);
-        cID = id;
-        
+        cID = id;       
         //Do things with the queue?
     }
 }
@@ -60,7 +59,6 @@ void Cartridge::setTestQueue(TestQueue* tq){
 }
 
 void Cartridge::update(){
-    Serial.print("Cart:");Serial.println(cID);
     //Update Sensor Data
     cartridgeSensors.updateSensors();
     
@@ -81,17 +79,17 @@ void Cartridge::update(){
     pumpAPID.update(myMillis() - lastLoopTime);
     pumpBPID.update(myMillis() - lastLoopTime);
     if (currentTest->getTestSetpoints()->desorbState){
-      pA.toggle(true);
-      pB.toggle(false);
-      pC.toggle(true);
+      vA.toggle(true);
+      vB.toggle(false);   //This should be PWM'd to set backpressure
+      vC.toggle(true);
     } else{
-      pA.toggle(false);
-      pB.toggle(true);
-      pC.toggle(false);
+      vA.toggle(false);
+      vB.toggle(false);   //This should be PWM'd to set backpressure
+      vC.toggle(true);
     }
     
     lastLoopTime = myMillis();
-
+}
 Test Cartridge::getCurrentTest(){
   return *currentTest;
 }

@@ -26,7 +26,6 @@ template<class T> class PID{
     
     public:
     PID(){
-      Serial.println("NEWINSTANCE");
       
     }
     ~PID(){}
@@ -64,10 +63,7 @@ template<class T> class PID{
     }
     void update(unsigned int dt){
       if (outputSet){
-        Serial.println(*sensorSource);
-        Serial.println(*setSource);
         int pidSignal = calculate(*setSource,*sensorSource,K,dt);
-        Serial.println(pidSignal);
         (updateObject->setPWM(pidSignal));
       }
     }
