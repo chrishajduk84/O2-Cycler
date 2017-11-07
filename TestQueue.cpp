@@ -31,12 +31,14 @@ Test* TestQueue::pop(){
         delete begin;
         begin = temp;
     }
+    queueCounter--;
     //Return       
     return nextTest;
 }
 
 Test* TestQueue::getCurrentTest(){ //Does not pop from TestQueue
-  return begin->test;
+  if (queueCounter > 0) return begin->test;
+  else return 0;
 }
 
 int TestQueue::size(){
