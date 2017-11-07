@@ -19,7 +19,7 @@ Sensors::~Sensors(){
 }
 
 float Sensors::getP_Abs(){
-	csData.pAbs = (analogRead(*pP_Abs)-91.80193)/27.3;
+	csData.pAbs = ((analogRead(*pP_Abs)-91.80193)/27.3)-14.50;
   return csData.pAbs;
 }
 
