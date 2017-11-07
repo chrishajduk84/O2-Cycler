@@ -26,11 +26,8 @@ class Cartridge{
     Heater heater;
     PID<Heater> heaterPID;
     Valve vA; //2 Way
-//    BangBang<Valve> valveABang;
     Valve vB; //2 Way
-//    BangBang<Valve> valveBBang;
     Valve vC; //3 Way
-//    BangBang<Valve> valveCBang;
     Pump pA;    //Pressure
     PID<Pump> pumpAPID;
     Pump pB;    //Vacuum

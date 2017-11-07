@@ -63,12 +63,19 @@ void Cartridge::update(){
     cartridgeSensors.updateSensors();
     
     //Update TestQueue
+    if (tQueue.size() <= 0){ //If the test queue is empty, put the cartridge in to a safe state and return
+      pA.stopPWM();pB.stopPWM();heater.stopPWM();
+      pA.toggle(false);pB.toggle(false);heater.toggle(false);
+      vA.toggle(false);vB.toggle(false);vC.toggle(false);
+      return; 
+    }
     currentTest = tQueue.getCurrentTest();
     //TestSetpoints sensors;
     if (!currentTest->update(cartridgeSensors.getSensorData())){
       delete tQueue.pop(); //Delete Previous Test
       currentTest = tQueue.getCurrentTest(); //Start new test
-
+      if (!currentTest) return; //If the test queue is empty, return
+      
       //and switch control systems
       heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
       pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
