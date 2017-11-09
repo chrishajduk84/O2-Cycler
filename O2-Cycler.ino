@@ -92,7 +92,9 @@ void loop(){
 //      }
 
               Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
-      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2);
+      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2);Serial.print(", ");
+      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2Temp);Serial.print(", ");      
+      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2Comp);
       Serial.println(" ");
       
       dataTime = myMillis();

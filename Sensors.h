@@ -27,6 +27,8 @@ class Sensors {
 	const double C3 = -0.000004333;
 	const double C0 = -(C3*pow(20, 3) + C2*pow(20, 1) + C1*20);
 	float THERM_RESIST = 0.0;
+  float valO2;
+  float O2Therm;  
   Adafruit_MAX31855* thermocouple;
   CartridgeSensors csData;
   
