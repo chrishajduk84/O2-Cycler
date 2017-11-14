@@ -49,14 +49,14 @@ float Sensors::getO2(){
 }
 
 float Sensors::getO2Therm(){
-	//THERM_RESIST = 24900*((V3_3/(analogRead(*pO2Therm)/204.6))-1);
+	THERM_RESIST = 24900*((3.30/(analogRead(*pO2Therm)/204.6))-1);
 	csData.O2Temp = (1.0/(THERM_A + THERM_B*log(THERM_RESIST) + THERM_C*pow(log(THERM_RESIST), 3))) - 273.15;
   return csData.O2Temp;
 }
 
 float Sensors::getO2Comp(){
-	float valO2 = getO2();
-	float O2Therm = getO2Therm();
+	valO2 = getO2();
+	O2Therm = getO2Therm();
 	csData.O2Comp = valO2 + C3*pow(O2Therm, 3) + C2*pow(O2Therm, 2) + C1*O2Therm + C0;
   return csData.O2Comp;
 }
