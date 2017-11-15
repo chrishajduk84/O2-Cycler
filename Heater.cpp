@@ -6,6 +6,7 @@
 unsigned int Heater::pinList[NUM_CARTRIDGES];
 unsigned int Heater::listLength;
 Heater* Heater::heaterList[NUM_CARTRIDGES];
+float heatingFactor[NUM_CARTRIDGES];
 
 /* NOTE: THIS IS A PWM HACK */
 long int timer = 0;
@@ -14,7 +15,7 @@ ISR(TIMER5_COMPA_vect)   // timer compare interrupt service routine
   /************HEATER****************/
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
-      if (timer%100 < Heater::heaterList[i]->duty){
+      if (timer%100 < ((Heater::heaterList[i]->duty)*heatingFactore[1])){     //REMEMBER TO FIX THE *0.5 HACK
         Heater::heaterList[i]->toggle(true);
       }
       else{
@@ -124,5 +125,9 @@ void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
 
 void Heater::stopPWM(){ //Hacks not really PWM
   pwm = false;
+}
+
+void Heater::setMaxHeatingPower(float heatingFactor){
+  
 }
 

@@ -30,6 +30,7 @@ class Heater{
     bool getState();
     void setPWM(int _duty); //Hacks not really PWM
     void stopPWM(); //Hacks not really PWM
+    void setMaxHeatingPower(float heatingFactor);
 };
 
 #endif

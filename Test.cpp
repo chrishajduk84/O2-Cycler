@@ -26,7 +26,9 @@ Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
     mSetpoints.temperature = mSettings.desorpTemp;
     mSetpoints.outPressure = mSettings.outPressure;
     mSetpoints.inPressure = 0;
-    
+
+//    mSettings.minHeatingTime = 100000;
+//    mSettings.minCoolingTime = 100000;
     
 }
 
@@ -54,7 +56,7 @@ bool Test::update(CartridgeSensors* sensorData){
     
     //Update Setpoints
     if (mSetpoints.desorbState){
-      if (sensorData->temperature >= mSetpoints.temperature){// && mData->stateTime >= mSettings->minHeatingTime){
+      if ((sensorData->temperature >= mSetpoints.temperature)){// && (mData.stateTime >= mSettings.minHeatingTime)){
         //At the end of the desorption state, switch to absorption
         mSetpoints.desorbState = false;
         //Update Setpoints for ABSORPTION - Temperature, Pressure
@@ -64,7 +66,7 @@ bool Test::update(CartridgeSensors* sensorData){
       }
     }
     else if (!mSetpoints.desorbState){
-      if (sensorData->temperature <= mSetpoints.temperature){ // && mData->stateTime >= mSettings->minCoolingTime){
+      if ((sensorData->temperature <= mSetpoints.temperature)&& (false)){// && (mData.stateTime >= mSettings.minCoolingTime)){
         //At the end of the absorption state, add one cycle and switch to desorbtion
         cycle++;
         mSetpoints.desorbState = true;
