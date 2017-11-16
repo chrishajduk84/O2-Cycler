@@ -128,5 +128,5 @@ String questionValue(String question){
 }
 
 unsigned long int myMillis(){
-  return timer/490.46*1000/2  ;
+  return timer/490.46*1000;
 }

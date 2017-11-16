@@ -21,11 +21,15 @@ Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
     mSettings = *settings;
     mSensors = *sensors;
 
-    //Update Setpoints - Start with desorption state
-    desorbState = true;
-    mSetpoints.temperature = mSettings.desorpTemp;
-    mSetpoints.outPressure = mSettings.outPressure;
-    mSetpoints.inPressure = 0;
+    //Update Setpoints - Start with absorption state
+    desorbState = false;
+    mSetpoints.desorbState = false;
+    //Update Setpoints for ABSORPTION - Temperature, Pressure
+    mSetpoints.temperature = mSettings.absorbTemp;
+    mSetpoints.inPressure = mSettings.inPressure;
+    mSetpoints.outPressure = 14.5;
+    //Reset Timer
+    beginStateTime = myMillis()/1000;
 
 //    mSettings.minHeatingTime = 100000;
 //    mSettings.minCoolingTime = 100000;
@@ -53,7 +57,7 @@ bool Test::update(CartridgeSensors* sensorData){
     if (cycle > mSettings.cycles){
       return false; //Destroy current test object, alternatively raise a flag -Currently raising a flag
     }
-    
+
     //Update Setpoints
     if (mSetpoints.desorbState){
       if ((sensorData->temperature >= mSetpoints.temperature) && (mData.stateTime >= mSettings.minHeatingTime)){
@@ -64,7 +68,7 @@ bool Test::update(CartridgeSensors* sensorData){
         mSetpoints.inPressure = mSettings.inPressure;
         mSetpoints.outPressure = 14.5;
         //Reset Timer
-        beginStateTime = myMillis();
+        beginStateTime = myMillis()/1000;
       }
     }
     else if (!mSetpoints.desorbState){
@@ -77,11 +81,10 @@ bool Test::update(CartridgeSensors* sensorData){
         mSetpoints.outPressure = mSettings.outPressure;
         mSetpoints.inPressure = 0;
         //Reset Timer
-        beginStateTime = myMillis();
+        beginStateTime = myMillis()/1000;
       }
     }
-    mData.stateTime = myMillis() - beginStateTime;
+    mData.stateTime = myMillis()/1000 - beginStateTime;
     
     return true;
 }
-
