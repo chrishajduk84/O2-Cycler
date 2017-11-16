@@ -56,6 +56,7 @@ void Cartridge::setTestQueue(TestQueue* tq){
   heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
   pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
   pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
+  heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
 }
 
 void Cartridge::update(){
@@ -80,6 +81,7 @@ void Cartridge::update(){
       heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
       pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
       pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
+      heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
     }
     //Update Control Systems
     heaterPID.update(myMillis() - lastLoopTime);
