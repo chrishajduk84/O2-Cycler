@@ -62,6 +62,7 @@ typedef struct _TestData{
 } TestData;
 
 class Test{
+  float beginStateTime = 0;
   public:
   Test(TestOutputs* outputs, TestParameters* setpoint, TestData* sensors);
   TestOutputs* getTestOutputs();
