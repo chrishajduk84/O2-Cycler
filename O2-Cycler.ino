@@ -109,10 +109,11 @@ void userInputTest(int cartridgeID, int timeint, TestParameters* tp, TestData* v
   tp->cycles = questionValue("How many cycles? (#)").toInt();
   tp->desorpTemp = questionValue("What is the desorption temperature? (°C)").toFloat();
   tp->absorbTemp = questionValue("What is the absorption temperature? (°C)").toFloat();
-  tp->heatingPower = questionValue("What is the heating power? (W, max=12.0)").toFloat();
-  tp->inPressure = questionValue("What is the inlet pressure? (psi)").toFloat();
-  tp->outPressure = questionValue("What is the outlet pressure? (psi)").toFloat();
-
+  tp->heatingPower = questionValue("What is the heating power? (0 - 1.0)").toFloat();
+  tp->inPressure = questionValue("What is the inlet pressure? (relative psi)").toFloat();
+  tp->outPressure = questionValue("What is the outlet pressure? (relative psi)").toFloat();
+  tp->minHeatingTime = questionValue("What is the minimum heating time? (seconds)").toFloat();
+  tp->minCoolingTime = questionValue("What is the minimum cooling time? (seconds)").toFloat();
   tp->maxHeatingTime = 3*60;
   tp->maxCoolingTime = 3*60;
 
@@ -127,5 +128,5 @@ String questionValue(String question){
 }
 
 unsigned long int myMillis(){
-  return timer/490.46*1000/2;
+  return timer/490.46*1000;
 }

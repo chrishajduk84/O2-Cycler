@@ -56,21 +56,22 @@ void Cartridge::setTestQueue(TestQueue* tq){
   heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
   pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
   pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
+  heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
 }
 
 void Cartridge::update(){
     //Update Sensor Data
     cartridgeSensors.updateSensors();
     
-    //Update TestQueue
+    //If all tests have finished put the device into a safe state 
     if (tQueue.size() <= 0){ //If the test queue is empty, put the cartridge in to a safe state and return
       pA.stopPWM();pB.stopPWM();heater.stopPWM();
       pA.toggle(false);pB.toggle(false);heater.toggle(false);
       vA.toggle(false);vB.toggle(false);vC.toggle(false);
       return; 
     }
+    //Check if current Test has finished
     currentTest = tQueue.getCurrentTest();
-    //TestSetpoints sensors;
     if (!currentTest->update(cartridgeSensors.getSensorData())){
       delete tQueue.pop(); //Delete Previous Test
       currentTest = tQueue.getCurrentTest(); //Start new test
@@ -80,6 +81,7 @@ void Cartridge::update(){
       heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
       pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
       pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
+      heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
     }
     //Update Control Systems
     heaterPID.update(myMillis() - lastLoopTime);
@@ -100,4 +102,5 @@ void Cartridge::update(){
 Test Cartridge::getCurrentTest(){
   return *currentTest;
 }
+
 

@@ -15,6 +15,7 @@ class Heater{
     public:
     bool pwm = false;
     int duty;
+    float heatingFactor = 1;
     static unsigned int listLength;
     static Heater* heaterList[NUM_CARTRIDGES];
     Heater(unsigned int _togglePin);
@@ -30,6 +31,7 @@ class Heater{
     bool getState();
     void setPWM(int _duty); //Hacks not really PWM
     void stopPWM(); //Hacks not really PWM
+    void setMaxPower(float heatingFactor);
 };
 
 #endif

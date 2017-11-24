@@ -14,7 +14,7 @@ ISR(TIMER5_COMPA_vect)   // timer compare interrupt service routine
   /************HEATER****************/
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
-      if (timer%100 < Heater::heaterList[i]->duty){
+      if (timer%100 < ((Heater::heaterList[i]->duty)*Heater::heaterList[i]->heatingFactor)){
         Heater::heaterList[i]->toggle(true);
       }
       else{
@@ -124,5 +124,9 @@ void Heater::setPWM(int _duty){ //Hacks not really (hardware) PWM
 
 void Heater::stopPWM(){ //Hacks not really PWM
   pwm = false;
+}
+
+void Heater::setMaxPower(float _heatingFactor){
+  heatingFactor = _heatingFactor;
 }
 
