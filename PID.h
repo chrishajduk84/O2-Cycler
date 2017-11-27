@@ -14,7 +14,7 @@ struct method_helper {
   typedef void (Tx::*type)(int);
 };
 
-extern unsigned long timer;
+extern unsigned long int timer;
 
 template<class T> class PID{
     typename method_helper<T>::type updateFunction;
