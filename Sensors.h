@@ -19,6 +19,7 @@ typedef struct _cartridgeSensors{
 
 class Sensors {
 	unsigned int *pP_Abs, *pP_Gauge, *pTherm, *pFlow, *pTFlow, *pO2, *pO2Therm, *pHeaterCurrent;
+  const float N = 10.0;
 	const double THERM_A = 0.001129241;
 	const double THERM_B = 0.0002341077;
 	const double THERM_C = 0.00000008775468;
@@ -33,7 +34,7 @@ class Sensors {
   CartridgeSensors csData;
   
 	public:
-
+  
 	Sensors (int sensorIndex);
   ~Sensors();
 
