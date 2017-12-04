@@ -28,7 +28,7 @@ void Valve::toggle(bool _state){
         long int tempTime = myMillis();
         long int diff = 0;
         delay(3000);
-//        while(diff < 500){diff = myMillis() - tempTime;}
+//        while(diff < 2500){diff = myMillis() - tempTime;}
         analogWrite(togglePin, 127);
     }
     else{ //OFF

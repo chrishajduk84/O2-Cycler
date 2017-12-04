@@ -14,7 +14,7 @@ struct method_helper {
   typedef void (Tx::*type)(int);
 };
 
-extern unsigned long timer;
+extern unsigned long int timer;
 
 template<class T> class PID{
     typename method_helper<T>::type updateFunction;
@@ -32,6 +32,8 @@ template<class T> class PID{
     void setSetpointSource(float* sourceData){setSource = sourceData;}
     void setSensorSource(float* sensorData){sensorSource = sensorData;}
     void setOutput(T* obj, typename method_helper<T>::type func){updateFunction = func; updateObject = obj;outputSet = true;}
+    void toggle(){outputSet != outputSet;}
+    void toggle(bool state){if (state != outputSet)outputSet = state;}
     void setGain(float* _K){
       //Must conform to Kp,Ki,Kd,lastError,Integral
       K = _K;

@@ -18,7 +18,7 @@ void setup(){
     while(!Serial){delay(1);} //Wait for serial interface to initialize
 
     /******Setup for Timer0 Interrupt function******/
-    TIMSK5 |= (1 << OCIE5A);
+    TIMSK5 |= (1 << TOIE5);
     /***********************************************/
   
     //Check how many cartridges are loaded
@@ -68,9 +68,8 @@ void loop(){
         
     }
     //Update Display if available
-    
     if ((myMillis() - dataTime) > 1000){
-      int i = 1;
+      int i = 0;
       Serial.print((myMillis()-setupTime)/1000.0);Serial.print(", ");
 //      for (int i = 0; i < NUM_CARTRIDGES; i++){
 //        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
@@ -82,6 +81,7 @@ void loop(){
         else {
           Serial.print("ABSORBING");
         }
+  
         Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->cycles);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");
@@ -91,12 +91,11 @@ void loop(){
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
 //      }
 
-              Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
-      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2);Serial.print(", ");
-      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2Temp);Serial.print(", ");      
-      Serial.print(cartridges[1]->cartridgeSensors.getSensorData()->O2Comp);
+      Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+      Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2);Serial.print(", ");
+      Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2Temp);Serial.print(", ");      
+      Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2Comp);
       Serial.println(" ");
-      
       dataTime = myMillis();
     }
 }

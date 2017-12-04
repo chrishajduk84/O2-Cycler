@@ -10,8 +10,8 @@ Sensors::Sensors(int sensorIndex){
 	pO2 = &O2Pinout;
 	pO2Therm = &O2ThermPinout;
 	pHeaterCurrent = (HeaterCurrentPinout + sensorIndex);
-
   thermocouple = new Adafruit_MAX31855(*pTherm);
+  csData.temperature = 30;//thermocouple->readCelsius();       //First value for rolling avg. [to prevent dividing by 0]
 }
 
 Sensors::~Sensors(){
@@ -29,7 +29,9 @@ float Sensors::getP_Gauge(){
 }
 
 float Sensors::getTherm(){
-	csData.temperature = thermocouple->readCelsius();
+  csData.temperature -= csData.temperature/N;               //Rolling Average
+	csData.temperature += (thermocouple->readCelsius())/N;    //[Exponentially Weighted]
+  if (isnan(csData.temperature)){csData.temperature = thermocouple->readCelsius();}  //Flushes out rolling average if "not a number" val corrupts the average
   return csData.temperature;
 }
 

@@ -2,8 +2,8 @@
 
 unsigned int controllerCount;
 
-ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
-{
+//ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
+//{
 //    struct ControllerItem<Heater>* list = controllerList;
 //    for (int i = 0; i < controllerCount; i++){
 //      if (list->initialized){
@@ -18,5 +18,5 @@ ISR(TIMER1_COMPA_vect)   // timer compare interrupt service routine
 //      list = list->next;
 //    }
 //    timer += 1;
-}
+//}
 

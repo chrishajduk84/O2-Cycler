@@ -8,9 +8,10 @@ unsigned int Heater::listLength;
 Heater* Heater::heaterList[NUM_CARTRIDGES];
 
 /* NOTE: THIS IS A PWM HACK */
-long int timer = 0;
-ISR(TIMER5_COMPA_vect)   // timer compare interrupt service routine
+unsigned long int timer = 0;
+ISR(TIMER5_OVF_vect)   // timer compare interrupt service routine
 {
+  timer += 1;
   /************HEATER****************/
   for (int i = 0; i < Heater::listLength; i++){
     if (Heater::heaterList[i]->pwm){
@@ -34,7 +35,6 @@ ISR(TIMER5_COMPA_vect)   // timer compare interrupt service routine
       }
     }
   }
-  timer += 1;
 }
 /****************************/
 
