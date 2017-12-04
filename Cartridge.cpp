@@ -91,10 +91,14 @@ void Cartridge::update(){
       vA.toggle(true);
       vB.toggle(false);   //This should be PWM'd to set backpressure
       vC.toggle(true);
+      pumpAPID.toggle(false);
+      pumpBPID.toggle(true);
     } else{
       vA.toggle(false);
       vB.toggle(false);   //This should be PWM'd to set backpressure
       vC.toggle(false);
+      pumpAPID.toggle(true);
+      pumpBPID.toggle(false);
     }
     
     lastLoopTime = myMillis();

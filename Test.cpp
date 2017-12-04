@@ -29,10 +29,8 @@ Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
     mSetpoints.inPressure = mSettings.inPressure;
     mSetpoints.outPressure = 14.5;
     //Reset Timer
-    beginStateTime = myMillis()/1000;
+    beginStateTime = myMillis()/1000.0;
 
-//    mSettings.minHeatingTime = 100000;
-//    mSettings.minCoolingTime = 100000;
     
 }
 
@@ -68,7 +66,7 @@ bool Test::update(CartridgeSensors* sensorData){
         mSetpoints.inPressure = mSettings.inPressure;
         mSetpoints.outPressure = 14.5;
         //Reset Timer
-        beginStateTime = myMillis()/1000;
+        beginStateTime = myMillis()/1000.0;
       }
     }
     else if (!mSetpoints.desorbState){
@@ -81,10 +79,10 @@ bool Test::update(CartridgeSensors* sensorData){
         mSetpoints.outPressure = mSettings.outPressure;
         mSetpoints.inPressure = 0;
         //Reset Timer
-        beginStateTime = myMillis()/1000;
+        beginStateTime = myMillis()/1000.0;
       }
     }
-    mData.stateTime = myMillis()/1000 - beginStateTime;
+    mData.stateTime = myMillis()/1000.0 - beginStateTime;
     
     return true;
 }
