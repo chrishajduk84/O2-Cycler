@@ -7,6 +7,13 @@
 #define HEATER_UPDATE 1000
 #define PUMP_UPDATE 200
 
+typedef enum _CycleState{
+  ABSORB = 0,
+  INTERMEDIATE_A = 1,
+  INTERMEDIATE_B = 2,
+  DESORB = 3
+} CycleState;
+
 typedef struct _TestOutputs{ //These contain function pointers //THIS MAYBE DEPRECIATED/REMOVED
     void* (*heater)(int);
     void* (*inPump)(int);
@@ -35,7 +42,7 @@ typedef struct _TestSetpoints{
     float temperature;
     float inPressure;
     float outPressure;
-    bool desorbState;
+    CycleState cycleState;
 } TestSetpoints;
 /*typedef struct _TestSensors{
     float temperature;
@@ -71,7 +78,5 @@ class Test{
   TestData* getTestData();
   bool update(CartridgeSensors* sensorData);
 };
-
-
 
 #endif

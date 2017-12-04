@@ -29,10 +29,10 @@ Cartridge::Cartridge(unsigned int id):heater(heaterPinout[id-1]),vA(vAPinout[id-
         heaterPID.setSensorSource(&cartridgeSensors.getSensorData()->temperature);
         heaterPID.setOutput(&heater,&heater.setPWM);
         heaterPID.setGain(heaterK);
-        pumpAPID.setSensorSource(&cartridgeSensors.getSensorData()->pGauge); //Positive Pressure Sensor
+        pumpAPID.setSensorSource(&cartridgeSensors.getSensorData()->pInlet); //Positive Pressure Sensor
         pumpAPID.setOutput(&pA,&pA.setPWM);
         pumpAPID.setGain(pumpAK);
-        pumpBPID.setSensorSource(&cartridgeSensors.getSensorData()->pAbs);//Absolute Pressure Sensor
+        pumpBPID.setSensorSource(&cartridgeSensors.getSensorData()->pOutlet);//Absolute Pressure Sensor
         pumpBPID.setOutput(&pB,&pB.setPWM);
         pumpBPID.setGain(pumpBK);
         cID = id;       
@@ -65,6 +65,7 @@ void Cartridge::update(){
     
     //If all tests have finished put the device into a safe state 
     if (tQueue.size() <= 0){ //If the test queue is empty, put the cartridge in to a safe state and return
+      pumpAPID.toggle(false); pumpBPID.toggle(false);heaterPID.toggle(false);
       pA.stopPWM();pB.stopPWM();heater.stopPWM();
       pA.toggle(false);pB.toggle(false);heater.toggle(false);
       vA.toggle(false);vB.toggle(false);vC.toggle(false);
@@ -87,18 +88,36 @@ void Cartridge::update(){
     heaterPID.update(myMillis() - lastLoopTime);
     pumpAPID.update(myMillis() - lastLoopTime);
     pumpBPID.update(myMillis() - lastLoopTime);
-    if (currentTest->getTestSetpoints()->desorbState){
+    
+    if (currentTest->getTestSetpoints()->cycleState == ABSORB){
+      vA.toggle(false);
+      vB.toggle(false);   //This should be PWM'd to set backpressure
+      vC.toggle(false);
+      pumpAPID.toggle(true);
+      pumpBPID.toggle(false);
+    }
+    else if (currentTest->getTestSetpoints()->cycleState == INTERMEDIATE_A){
+      vA.toggle(true);
+      vB.toggle(false);   //This should be PWM'd to set backpressure
+      vC.toggle(false);
+      pumpAPID.toggle(false);
+      pumpBPID.toggle(true);
+    }
+    else if (currentTest->getTestSetpoints()->cycleState == INTERMEDIATE_B){
+      vA.toggle(true);
+      vB.toggle(true);   //This should be PWM'd to set backpressure
+      vC.toggle(false);
+      pumpAPID.toggle(false);
+      pumpBPID.toggle(false);
+    } 
+    else if (currentTest->getTestSetpoints()->cycleState == DESORB){
       vA.toggle(true);
       vB.toggle(false);   //This should be PWM'd to set backpressure
       vC.toggle(true);
       pumpAPID.toggle(false);
       pumpBPID.toggle(true);
     } else{
-      vA.toggle(false);
-      vB.toggle(false);   //This should be PWM'd to set backpressure
-      vC.toggle(false);
-      pumpAPID.toggle(true);
-      pumpBPID.toggle(false);
+
     }
     
     lastLoopTime = myMillis();

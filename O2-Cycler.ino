@@ -75,10 +75,16 @@ void loop(){
 //        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
 //        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
 
-        if(cartridges[i]->getCurrentTest().getTestSetpoints()->desorbState){
+        if(cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == DESORB){
           Serial.print("DESORBING");
         }
-        else {
+        else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == INTERMEDIATE_A){
+          Serial.print("INTERME_A");
+        }
+        else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == INTERMEDIATE_B){
+          Serial.print("INTERME_B");
+        }
+        else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == ABSORB) {
           Serial.print("ABSORBING");
         }
   
@@ -88,7 +94,7 @@ void loop(){
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->inPressure);Serial.print(", ");
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->outPressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
-        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pGauge);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pAbs);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pInlet);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pOutlet);Serial.print(", ");
 //      }
 
       Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");

@@ -6,10 +6,6 @@ TestSetpoints mSetpoints;
 TestData mSensors;
 TestData mData;
 
-bool desorbState = false;
-int cycle = 0;
-float temperature = 0;
-
 Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
          
     //Check TestMask to ensure there is a valid combination of test parameters
@@ -22,8 +18,7 @@ Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
     mSensors = *sensors;
 
     //Update Setpoints - Start with absorption state
-    desorbState = false;
-    mSetpoints.desorbState = false;
+    mSetpoints.cycleState = ABSORB;
     //Update Setpoints for ABSORPTION - Temperature, Pressure
     mSetpoints.temperature = mSettings.absorbTemp;
     mSetpoints.inPressure = mSettings.inPressure;
@@ -52,28 +47,37 @@ TestData* Test::getTestData(){
 
 bool Test::update(CartridgeSensors* sensorData){
     //Check if test settings need to be changed (new test in the queue?)
-    if (cycle > mSettings.cycles){
+    if (mSetpoints.cycles >= mSettings.cycles){
       return false; //Destroy current test object, alternatively raise a flag -Currently raising a flag
     }
 
-    //Update Setpoints
-    if (mSetpoints.desorbState){
-      if ((sensorData->temperature >= mSetpoints.temperature) && (mData.stateTime >= mSettings.minHeatingTime)){
-        //At the end of the desorption state, switch to absorption
-        mSetpoints.desorbState = false;
-        //Update Setpoints for ABSORPTION - Temperature, Pressure
-        mSetpoints.temperature = mSettings.absorbTemp;
-        mSetpoints.inPressure = mSettings.inPressure;
-        mSetpoints.outPressure = 14.5;
+    if (mSetpoints.cycleState == ABSORB){
+      //SWITCHING CONDITIONS - At the end of the absorption state switch to the intermediate state
+      if ((sensorData->temperature <= mSetpoints.temperature) && (mData.stateTime >= mSettings.minCoolingTime)){
+        mSetpoints.cycleState = INTERMEDIATE_A;
+        //Update Setpoints for INTERMEDIATE_A - Temperature, Pressure
+        mSetpoints.temperature = mSettings.desorpTemp;
+        mSetpoints.outPressure = mSettings.outPressure;
+        mSetpoints.inPressure = 0;
         //Reset Timer
         beginStateTime = myMillis()/1000.0;
       }
     }
-    else if (!mSetpoints.desorbState){
-      if ((sensorData->temperature <= mSetpoints.temperature) && (mData.stateTime >= mSettings.minCoolingTime)){
-        //At the end of the absorption state, add one cycle and switch to desorbtion
-        cycle++;
-        mSetpoints.desorbState = true;
+    else if (mSetpoints.cycleState == INTERMEDIATE_A){ //The purpose of this is to pump down the cartridge
+      if (sensorData->pOutlet <= mSetpoints.outPressure){
+        mSetpoints.cycleState = INTERMEDIATE_B;
+        //Update Setpoints for INTERMEDIATE_B - Temperature, Pressure
+        mSetpoints.temperature = mSettings.desorpTemp;
+        mSetpoints.outPressure = mSettings.outPressure;
+        mSetpoints.inPressure = 0;
+        //Reset Timer
+        beginStateTime = myMillis()/1000.0;
+      }
+    }
+    else if (mSetpoints.cycleState == INTERMEDIATE_B){ //The purpose of this is to seal it until it is ready to desorb (temperature-wise)
+      
+      if (sensorData->temperature >= mSetpoints.temperature){
+        mSetpoints.cycleState = DESORB;
         //Update Setpoints for DESORPTION - Temperature, Pressure
         mSetpoints.temperature = mSettings.desorpTemp;
         mSetpoints.outPressure = mSettings.outPressure;
@@ -82,6 +86,20 @@ bool Test::update(CartridgeSensors* sensorData){
         beginStateTime = myMillis()/1000.0;
       }
     }
+    else if (mSetpoints.cycleState == DESORB){
+      //SWITCHING CONDITIONS - At the end of the desorption state, switch to absorption
+      if ((sensorData->temperature >= mSetpoints.temperature) && (mData.stateTime >= mSettings.minHeatingTime)){
+        mSetpoints.cycles++;
+        mSetpoints.cycleState = ABSORB;
+        //Update Setpoints for ABSORBTION - Temperature, Pressure
+        mSetpoints.temperature = mSettings.absorbTemp;
+        mSetpoints.inPressure = mSettings.inPressure;
+        mSetpoints.outPressure = 14.5;
+        //Reset Timer
+        beginStateTime = myMillis()/1000.0;
+      }
+    }
+    
     mData.stateTime = myMillis()/1000.0 - beginStateTime;
     
     return true;
