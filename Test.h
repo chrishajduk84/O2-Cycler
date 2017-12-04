@@ -1,6 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include "O2-Cycler.h"
 #include "PID.h"
 #include "Sensors.h"
 
@@ -8,20 +9,12 @@
 #define PUMP_UPDATE 200
 
 typedef enum _CycleState{
+  INVALID = -1,
   ABSORB = 0,
   INTERMEDIATE_A = 1,
   INTERMEDIATE_B = 2,
   DESORB = 3
 } CycleState;
-
-typedef struct _TestOutputs{ //These contain function pointers //THIS MAYBE DEPRECIATED/REMOVED
-    void* (*heater)(int);
-    void* (*inPump)(int);
-    void* (*outPump)(int);
-    void* (*valve3)(int);
-    void* (*valve2A)(int);
-    void* (*valve2B)(int);
-} TestOutputs;
 
 typedef struct _TestParameters{
     int cycles; //Default Value: 1
@@ -71,8 +64,7 @@ typedef struct _TestData{
 class Test{
   float beginStateTime = 0;
   public:
-  Test(TestOutputs* outputs, TestParameters* setpoint, TestData* sensors);
-  TestOutputs* getTestOutputs();
+  Test(TestParameters* setpoint);
   TestParameters* getTestParameters();
   TestSetpoints* getTestSetpoints();
   TestData* getTestData();

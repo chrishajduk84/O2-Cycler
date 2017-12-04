@@ -12,14 +12,42 @@ unsigned long setupTime = 0;
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
 
+
+
+void userInputTest(int cartridgeID, int timeint, TestParameters* tp){
+  char buf[100];
+  sprintf(buf, "Cartridge:%d - Interval:%d, Specify the parameters:",cartridgeID + 1, timeint);
+  Serial.println(buf);
+  
+  tp->cycles = questionValue("How many cycles? (#)").toInt();
+  tp->desorpTemp = questionValue("What is the desorption temperature? (°C)").toFloat();
+  tp->absorbTemp = questionValue("What is the absorption temperature? (°C)").toFloat();
+  tp->heatingPower = questionValue("What is the heating power? (0 - 1.0)").toFloat();
+  tp->inPressure = questionValue("What is the inlet pressure? (relative psi)").toFloat();
+  tp->outPressure = questionValue("What is the outlet pressure? (relative psi)").toFloat();
+  tp->minHeatingTime = questionValue("What is the minimum heating time? (seconds)").toFloat();
+  tp->minCoolingTime = questionValue("What is the minimum cooling time? (seconds)").toFloat();
+  tp->maxHeatingTime = 3*60;
+  tp->maxCoolingTime = 3*60;
+
+}
+
+String questionValue(String question){
+  String tmp = "";
+  Serial.print(question);
+  while (tmp == ""){if (Serial.available() > 0)tmp = Serial.readString();}
+  Serial.println(tmp);
+  return tmp;
+}
+
+unsigned long int myMillis(){
+  return timer/490.46*1000;
+}
+
 void setup(){ 
     //Hardware Setup
     Serial.begin(115200);
     while(!Serial){delay(1);} //Wait for serial interface to initialize
-
-    /******Setup for Timer0 Interrupt function******/
-    TIMSK5 |= (1 << TOIE5);
-    /***********************************************/
   
     //Check how many cartridges are loaded
     
@@ -45,16 +73,18 @@ void setup(){
     for (int i = 0; i < NUM_CARTRIDGES; i++){
         for (int t = 0; t < totalTime[i]; t++){
             TestParameters* tp = new TestParameters();
-            TestData* td = new TestData();
-            TestOutputs* to = new TestOutputs();
-            userInputTest(i,t,tp,td);
-            Test* tes = new Test(to,tp,td);
+            userInputTest(i,t,tp);
+            Test* tes = new Test(tp);
             tests[i] = new TestQueue(tes);
             cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
         }
     }
     //"Please start recording data!"
     setupTime = myMillis();
+    
+    /******Setup for Timer0 Interrupt function******/
+    TIMSK5 |= (1 << TOIE5);
+    /***********************************************/
 }
 
 void loop(){
@@ -104,34 +134,4 @@ void loop(){
       Serial.println(" ");
       dataTime = myMillis();
     }
-}
-
-void userInputTest(int cartridgeID, int timeint, TestParameters* tp, TestData* var){
-  char buf[100];
-  sprintf(buf, "Cartridge:%d - Interval:%d, Specify the parameters:",cartridgeID + 1, timeint);
-  Serial.println(buf);
-  
-  tp->cycles = questionValue("How many cycles? (#)").toInt();
-  tp->desorpTemp = questionValue("What is the desorption temperature? (°C)").toFloat();
-  tp->absorbTemp = questionValue("What is the absorption temperature? (°C)").toFloat();
-  tp->heatingPower = questionValue("What is the heating power? (0 - 1.0)").toFloat();
-  tp->inPressure = questionValue("What is the inlet pressure? (relative psi)").toFloat();
-  tp->outPressure = questionValue("What is the outlet pressure? (relative psi)").toFloat();
-  tp->minHeatingTime = questionValue("What is the minimum heating time? (seconds)").toFloat();
-  tp->minCoolingTime = questionValue("What is the minimum cooling time? (seconds)").toFloat();
-  tp->maxHeatingTime = 3*60;
-  tp->maxCoolingTime = 3*60;
-
-}
-
-String questionValue(String question){
-  String tmp = "";
-  Serial.print(question);
-  while (tmp == ""){if (Serial.available() > 0)tmp = Serial.readString();}
-  Serial.println(tmp);
-  return tmp;
-}
-
-unsigned long int myMillis(){
-  return timer/490.46*1000;
 }

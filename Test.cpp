@@ -1,36 +1,24 @@
 #include "Test.h"
 
-TestOutputs mTO;
 TestParameters mSettings;
 TestSetpoints mSetpoints;
-TestData mSensors;
 TestData mData;
 
-Test::Test(TestOutputs* outputs, TestParameters* settings, TestData* sensors){
+Test::Test(TestParameters* settings){
          
     //Check TestMask to ensure there is a valid combination of test parameters
 
     //If test is not valid, ask for confirmation on assumptions
     
     //Save Parameters
-    mTO = *outputs;
     mSettings = *settings;
-    mSensors = *sensors;
 
-    //Update Setpoints - Start with absorption state
-    mSetpoints.cycleState = ABSORB;
+    mSetpoints.cycleState = INVALID;
     //Update Setpoints for ABSORPTION - Temperature, Pressure
     mSetpoints.temperature = mSettings.absorbTemp;
     mSetpoints.inPressure = mSettings.inPressure;
     mSetpoints.outPressure = 14.5;
-    //Reset Timer
-    beginStateTime = myMillis()/1000.0;
-
     
-}
-
-TestOutputs* Test::getTestOutputs(){
-  return &mTO;
 }
 
 TestParameters* Test::getTestParameters(){
@@ -48,7 +36,7 @@ TestData* Test::getTestData(){
 bool Test::update(CartridgeSensors* sensorData){
     //Check if test settings need to be changed (new test in the queue?)
     if (mSetpoints.cycles >= mSettings.cycles){
-      return false; //Destroy current test object, alternatively raise a flag -Currently raising a flag
+      return false; //Destroy current test object, alternatively raise a flag -Currently raising a flag, then destroying object
     }
 
     if (mSetpoints.cycleState == ABSORB){
@@ -98,6 +86,12 @@ bool Test::update(CartridgeSensors* sensorData){
         //Reset Timer
         beginStateTime = myMillis()/1000.0;
       }
+    }
+    else {
+          beginStateTime = myMillis()/1000.0;
+          //Update Setpoints - Start with absorption state
+           mSetpoints.cycleState = ABSORB;
+          
     }
     
     mData.stateTime = myMillis()/1000.0 - beginStateTime;
