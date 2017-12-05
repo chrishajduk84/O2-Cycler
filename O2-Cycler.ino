@@ -71,13 +71,14 @@ void setup(){
     
     //Generate Test Objects - User chooses the tests to run
     for (int i = 0; i < NUM_CARTRIDGES; i++){
+        tests[i] = new TestQueue();
         for (int t = 0; t < totalTime[i]; t++){
             TestParameters* tp = new TestParameters();
             userInputTest(i,t,tp);
             Test* tes = new Test(tp);
-            tests[i] = new TestQueue(tes);
-            cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
+            tests[i]->addTest(tes);
         }
+        cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
     }
     //"Please start recording data!"
     setupTime = myMillis();
@@ -116,6 +117,9 @@ void loop(){
         }
         else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == ABSORB) {
           Serial.print("ABSORBING");
+        }
+        else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == INVALID) {
+          Serial.print("INVALID");
         }
   
         Serial.print(", ");

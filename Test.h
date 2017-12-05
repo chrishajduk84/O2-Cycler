@@ -63,6 +63,10 @@ typedef struct _TestData{
 
 class Test{
   float beginStateTime = 0;
+  TestParameters mSettings = {};
+  TestSetpoints mSetpoints = {};
+  TestData mData = {};
+
   public:
   Test(TestParameters* setpoint);
   TestParameters* getTestParameters();

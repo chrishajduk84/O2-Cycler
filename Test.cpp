@@ -1,9 +1,5 @@
 #include "Test.h"
 
-TestParameters mSettings;
-TestSetpoints mSetpoints;
-TestData mData;
-
 Test::Test(TestParameters* settings){
          
     //Check TestMask to ensure there is a valid combination of test parameters
@@ -13,7 +9,7 @@ Test::Test(TestParameters* settings){
     //Save Parameters
     mSettings = *settings;
 
-    mSetpoints.cycleState = INVALID;
+    mSetpoints.cycleState = ABSORB;
     //Update Setpoints for ABSORPTION - Temperature, Pressure
     mSetpoints.temperature = mSettings.absorbTemp;
     mSetpoints.inPressure = mSettings.inPressure;
