@@ -6,8 +6,6 @@ Cartridge* Cartridge::cList[NUM_CARTRIDGES];
 unsigned int Cartridge::listLength;
 
 
-long lastLoopTime = 0;
-
 Cartridge* Cartridge::getById(unsigned int id){
     if (id > 0)
         return cList[id-1];
@@ -52,11 +50,13 @@ Cartridge::~Cartridge(){
 
 void Cartridge::setTestQueue(TestQueue* tq){
   tQueue = *tq;
-  currentTest = tQueue.getCurrentTest();
-  heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
-  pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
-  pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
-  heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
+  if (tQueue.size() > 0){
+    currentTest = tQueue.getCurrentTest();
+    heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
+    pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);
+    pumpBPID.setSetpointSource(&currentTest->getTestSetpoints()->outPressure);
+    heater.setMaxPower(currentTest->getTestParameters()->heatingPower);
+  }
 }
 
 void Cartridge::update(){
@@ -76,7 +76,7 @@ void Cartridge::update(){
     if (!currentTest->update(cartridgeSensors.getSensorData())){
       delete tQueue.pop(); //Delete Previous Test
       currentTest = tQueue.getCurrentTest(); //Start new test
-      if (!currentTest) return; //If the test queue is empty, return
+      //if (!currentTest) return; //If the test queue is empty, return
       
       //and switch control systems
       heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
@@ -119,11 +119,8 @@ void Cartridge::update(){
     } else{
 
     }
-    
     lastLoopTime = myMillis();
 }
 Test Cartridge::getCurrentTest(){
   return *currentTest;
 }
-
-

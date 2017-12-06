@@ -34,6 +34,7 @@ template<class T> class PID{
     void setOutput(T* obj, typename method_helper<T>::type func){updateFunction = func; updateObject = obj;outputSet = true;}
     void toggle(){outputSet != outputSet;}
     void toggle(bool state){if (state != outputSet)outputSet = state;}
+    bool getState(){return outputSet;}
     void setGain(float* _K){
       //Must conform to Kp,Ki,Kd,lastError,Integral
       K = _K;

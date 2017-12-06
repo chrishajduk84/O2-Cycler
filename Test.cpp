@@ -86,7 +86,7 @@ bool Test::update(CartridgeSensors* sensorData){
     else {
           beginStateTime = myMillis()/1000.0;
           //Update Setpoints - Start with absorption state
-           mSetpoints.cycleState = ABSORB;
+           //mSetpoints.cycleState = ABSORB;
           
     }
     

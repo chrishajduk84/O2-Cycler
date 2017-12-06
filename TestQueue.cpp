@@ -1,10 +1,5 @@
 #include "TestQueue.h"
 
-//TestWrapper is a singly linked-list
-TestWrapper* begin;
-TestWrapper* end;
-unsigned int queueCounter = 0;
-
 TestQueue::TestQueue(){}
 
 TestQueue::TestQueue(Test* t){
