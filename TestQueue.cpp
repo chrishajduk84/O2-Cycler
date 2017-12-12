@@ -1,10 +1,5 @@
 #include "TestQueue.h"
 
-//TestWrapper is a singly linked-list
-TestWrapper* begin;
-TestWrapper* end;
-int queueCounter = 0;
-
 TestQueue::TestQueue(){}
 
 TestQueue::TestQueue(Test* t){
@@ -14,10 +9,11 @@ TestQueue::TestQueue(Test* t){
 void TestQueue::addTest(Test* t){
     TestWrapper* tw = new TestWrapper();
     tw->test = t;
-    if (queueCounter <= 0){
+    if (queueCounter == 0){
         begin = tw;
+    }else{
+        end->next = tw;
     }
-    end->next = tw;
     end = tw;
     queueCounter++;
 }
@@ -30,8 +26,8 @@ Test* TestQueue::pop(){
         TestWrapper* temp = begin->next;
         delete begin;
         begin = temp;
+        queueCounter--;
     }
-    queueCounter--;
     //Return       
     return nextTest;
 }

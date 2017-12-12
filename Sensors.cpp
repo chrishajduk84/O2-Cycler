@@ -19,13 +19,13 @@ Sensors::~Sensors(){
 }
 
 float Sensors::getP_Abs(){
-	csData.pAbs = ((analogRead(*pP_Abs)-91.80193)/27.3)-14.50;
-  return csData.pAbs;
+	csData.pOutlet = ((analogRead(*pP_Abs)-91.80193)/27.3)-14.50;
+  return csData.pOutlet;
 }
 
 float Sensors::getP_Gauge(){
-	csData.pGauge = ((analogRead(*pP_Gauge)/1023.0)-0.04)/(0.009/0.145038);
-  return csData.pGauge;
+	csData.pInlet = ((analogRead(*pP_Gauge)/1023.0)-0.04)/(0.009/0.145038);
+  return csData.pInlet;
 }
 
 float Sensors::getTherm(){

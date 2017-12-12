@@ -6,8 +6,8 @@
 #include <Adafruit_MAX31855.h>
 
 typedef struct _cartridgeSensors{
-  float pAbs;
-  float pGauge;
+  float pOutlet; //Absolute Gauge
+  float pInlet; //Relative Gauge
   float temperature;
   float flow;
   float tFlow;

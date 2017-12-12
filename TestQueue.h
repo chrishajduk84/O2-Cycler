@@ -9,6 +9,11 @@ typedef struct _TestWrapper{
     } TestWrapper;
 
 class TestQueue{
+    //TestWrapper is a singly linked-list
+    TestWrapper* begin;
+    TestWrapper* end;
+    unsigned int queueCounter = 0;
+  
     public:
     TestQueue();
     TestQueue(Test* t);
