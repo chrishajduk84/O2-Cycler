@@ -3,6 +3,7 @@
 #include "TestQueue.h"
 #include "O2-Cycler.h"
 #include "Cartridge.h"
+#include <string.h>
 
 TestQueue* tests[NUM_CARTRIDGES];
 int totalTime[NUM_CARTRIDGES]; //In seconds - time for all tests to complete (cartridge independent)
@@ -11,8 +12,6 @@ unsigned long setupTime = 0;
 
 Test* currentTest[NUM_CARTRIDGES]; 
 Cartridge* cartridges[NUM_CARTRIDGES];
-
-
 
 void userInputTest(int cartridgeID, int timeint, TestParameters* tp){
   char buf[100];
@@ -29,7 +28,6 @@ void userInputTest(int cartridgeID, int timeint, TestParameters* tp){
   tp->minCoolingTime = questionValue("What is the minimum cooling time? (seconds)").toFloat();
   tp->maxHeatingTime = 3*60;
   tp->maxCoolingTime = 3*60;
-
 }
 
 String questionValue(String question){
@@ -38,6 +36,61 @@ String questionValue(String question){
   while (tmp == ""){if (Serial.available() > 0)tmp = Serial.readString();}
   Serial.println(tmp);
   return tmp;
+}
+
+void setTests(){
+  if (Serial.available() > 0){
+    //Parse input string:
+    //Cartridge #, # of tests (n),{Test cycles, Desorp Temp, Absorp Temp, Power, Inlet Pressure, Outlet Pressure, Min Heating Time, Min Cooling Time}*n, checksum
+    String str = Serial.readString();
+    
+    //Check for errors
+    byte checksum = 0;
+    const char* strArr = str.c_str();
+    int comma = 0;
+    for (int i = 0; i < str.length() - 1; i++){
+      if (strArr[i] == ',') comma++; //There are comma+1 fields
+    }
+    
+    float inputData[comma+1];
+    int counter = 0;
+    int pos = 0;
+    int lastpos = -1;
+    while((pos = str.indexOf(',', pos+1)) != -1){
+      inputData[counter] = str.substring(lastpos+1,pos).toFloat();
+      checksum ^= (int)inputData[counter] & 0xFF;
+      lastpos = pos;
+      counter++;
+    }
+    inputData[counter] = str.substring(lastpos+1,str.length()-1).toFloat();
+        
+    if (checksum != inputData[comma] && inputData[comma] != 0xFF){
+      return;
+    }
+
+    //Set variables
+    int numCartridge = (int)inputData[0];
+    int nTests = (int)inputData[1];
+    TestParameters* tp;
+    TestQueue* tests = new TestQueue();
+
+    for (int n = 0; n < nTests; n++){      
+        tp = new TestParameters();
+        tp->cycles = (int)inputData[n*8+2];
+        tp->desorpTemp = inputData[n*8+3];
+        tp->absorbTemp = inputData[n*8+4];
+        tp->heatingPower = inputData[n*8+5];
+        tp->inPressure = inputData[n*8+6];
+        tp->outPressure = inputData[n*8+7];
+        tp->minHeatingTime = inputData[n*8+8];
+        tp->minCoolingTime = inputData[n*8+9];
+        tp->maxHeatingTime = 3*60;
+        tp->maxCoolingTime = 3*60;
+        Test* tes = new Test(tp);
+        tests->addTest(tes);
+    }
+    cartridges[numCartridge-1]->setTestQueue(tests);
+  }
 }
 
 unsigned long int myMillis(){
@@ -59,7 +112,7 @@ void setup(){
     
     //Make a list of common or possible tests to complete
 
-    //How long is the total experiment?
+    /*//How long is the total experiment?
     for (int i = 0; i < NUM_CARTRIDGES; i++){
       char buf[70];sprintf(buf,"Cartridge %d: How many times will the parameters change?", i+1);
       Serial.print(buf);
@@ -79,7 +132,8 @@ void setup(){
             tests[i]->addTest(tes);
         }
         cartridges[i]->setTestQueue(tests[i]);  //Load TestQueue into each Cartridge
-    }
+    }*/
+    
     //"Please start recording data!"
     setupTime = myMillis();
     
@@ -89,6 +143,8 @@ void setup(){
 }
 
 void loop(){
+    setTests();
+  
     for (int i = 0; i < NUM_CARTRIDGES; i++){
         //Data
         //readSensors();
@@ -100,12 +156,9 @@ void loop(){
     }
     //Update Display if available
     if ((myMillis() - dataTime) > 1000){
-      int i = 0;
       Serial.print((myMillis()-setupTime)/1000.0);Serial.print(", ");
-//      for (int i = 0; i < NUM_CARTRIDGES; i++){
-//        Serial.print(cartridges[i]->getCurrentTest().getTestData()->cycles);Serial.print(", ");
-//        Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->temperature);Serial.print(", ");Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->pressure);Serial.print(", ");
-
+      for (int i = 0; i < NUM_CARTRIDGES; i++){
+        Serial.print("C");Serial.print(i+1);Serial.print(": ");
         if(cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == DESORB){
           Serial.print("DESORBING");
         }
@@ -129,9 +182,8 @@ void loop(){
         Serial.print(cartridges[i]->getCurrentTest().getTestSetpoints()->outPressure);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->temperature);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->heaterCurrent);Serial.print(", ");
         Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pInlet);Serial.print(", ");Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->pOutlet);Serial.print(", ");
-//      }
-
-      Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+        Serial.print(cartridges[i]->cartridgeSensors.getSensorData()->flow);Serial.print(", ");
+      }
       Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2);Serial.print(", ");
       Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2Temp);Serial.print(", ");      
       Serial.print(cartridges[0]->cartridgeSensors.getSensorData()->O2Comp);
