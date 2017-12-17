@@ -5,8 +5,8 @@
 #include "PID.h"
 #include "Sensors.h"
 
-#define HEATER_UPDATE 1000
-#define PUMP_UPDATE 200
+//Due to comparisons between float values - Defines allowance for temperature inaccuracy 0.1Celsius
+#define HEATING_EPSILON 0.1
 
 typedef enum _CycleState{
   INVALID = -1,
