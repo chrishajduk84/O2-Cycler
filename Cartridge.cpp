@@ -51,6 +51,9 @@ Cartridge::~Cartridge(){
 void Cartridge::setTestQueue(TestQueue* tq){
   tQueue = *tq;
   if (tQueue.size() > 0){
+    heaterPID.setOutput(&heater,&heater.setPWM);
+    pumpAPID.setOutput(&pA,&pA.setPWM);
+    pumpBPID.setOutput(&pB,&pB.setPWM);
     currentTest = tQueue.getCurrentTest();
     heaterPID.setSetpointSource(&currentTest->getTestSetpoints()->temperature);
     pumpAPID.setSetpointSource(&currentTest->getTestSetpoints()->inPressure);

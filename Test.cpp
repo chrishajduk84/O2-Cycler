@@ -14,6 +14,8 @@ Test::Test(TestParameters* settings){
     mSetpoints.temperature = mSettings.absorbTemp;
     mSetpoints.inPressure = mSettings.inPressure;
     mSetpoints.outPressure = 14.5;
+    mData.stateTime = 0;
+    beginStateTime = myMillis()/1000.0;
     
 }
 
@@ -60,7 +62,7 @@ bool Test::update(CartridgeSensors* sensorData){
     }
     else if (mSetpoints.cycleState == INTERMEDIATE_B){ //The purpose of this is to seal it until it is ready to desorb (temperature-wise)
       
-      if (sensorData->temperature >= mSetpoints.temperature){
+      if (sensorData->temperature >= mSetpoints.temperature - HEATING_EPSILON){
         mSetpoints.cycleState = DESORB;
         //Update Setpoints for DESORPTION - Temperature, Pressure
         mSetpoints.temperature = mSettings.desorpTemp;
