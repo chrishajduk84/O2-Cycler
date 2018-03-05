@@ -26,8 +26,8 @@ void userInputTest(int cartridgeID, int timeint, TestParameters* tp){
   tp->outPressure = questionValue("What is the outlet pressure? (relative psi)").toFloat();
   tp->minHeatingTime = questionValue("What is the minimum heating time? (seconds)").toFloat();
   tp->minCoolingTime = questionValue("What is the minimum cooling time? (seconds)").toFloat();
-  tp->maxHeatingTime = 3*60;
-  tp->maxCoolingTime = 3*60;
+  tp->maxHeatingTime = 10*60;
+  tp->maxCoolingTime = 10*60;
 }
 
 String questionValue(String question){
@@ -84,8 +84,8 @@ void setTests(){
         tp->outPressure = inputData[n*8+7];
         tp->minHeatingTime = inputData[n*8+8];
         tp->minCoolingTime = inputData[n*8+9];
-        tp->maxHeatingTime = 3*60;
-        tp->maxCoolingTime = 3*60;
+        tp->maxHeatingTime = 10*60;
+        tp->maxCoolingTime = 10*60;
         Test* tes = new Test(tp);
         tests->addTest(tes);
     }
