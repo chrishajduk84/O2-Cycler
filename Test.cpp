@@ -39,7 +39,7 @@ bool Test::update(CartridgeSensors* sensorData){
 
     if (mSetpoints.cycleState == ABSORB){
       //SWITCHING CONDITIONS - At the end of the absorption state switch to the intermediate state
-      if ((sensorData->temperature <= mSetpoints.temperature) && (mData.stateTime >= mSettings.minCoolingTime)){
+      if (((sensorData->temperature <= mSetpoints.temperature) && (mData.stateTime >= mSettings.minCoolingTime)) || mData.stateTime >= mSettings.maxCoolingTime){
         mSetpoints.cycleState = INTERMEDIATE_A;
         //Update Setpoints for INTERMEDIATE_A - Temperature, Pressure
         mSetpoints.temperature = mSettings.desorpTemp;
@@ -74,7 +74,7 @@ bool Test::update(CartridgeSensors* sensorData){
     }
     else if (mSetpoints.cycleState == DESORB){
       //SWITCHING CONDITIONS - At the end of the desorption state, switch to absorption
-      if ((sensorData->temperature >= mSetpoints.temperature) && (mData.stateTime >= mSettings.minHeatingTime)){
+      if (((sensorData->temperature >= mSetpoints.temperature - HEATING_EPSILON) && (mData.stateTime >= mSettings.minHeatingTime)) || mData.stateTime >= mSettings.maxHeatingTime){
         mSetpoints.cycles++;
         mSetpoints.cycleState = ABSORB;
         //Update Setpoints for ABSORBTION - Temperature, Pressure
