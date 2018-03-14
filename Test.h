@@ -13,7 +13,8 @@ typedef enum _CycleState{
   ABSORB = 0,
   INTERMEDIATE_A = 1,
   INTERMEDIATE_B = 2,
-  DESORB = 3
+  DESORB = 3,
+  INTERMEDIATE_C = 4
 } CycleState;
 
 typedef struct _TestParameters{

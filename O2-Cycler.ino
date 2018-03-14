@@ -168,6 +168,9 @@ void loop(){
         else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == INTERMEDIATE_B){
           Serial.print("INTERME_B");
         }
+	else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == INTERMEDIATE_C){
+	  Serial.print("INTERME_C"):
+	}
         else if (cartridges[i]->getCurrentTest().getTestSetpoints()->cycleState == ABSORB) {
           Serial.print("ABSORBING");
         }

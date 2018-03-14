@@ -73,11 +73,22 @@ bool Test::update(CartridgeSensors* sensorData){
       }
     }
     else if (mSetpoints.cycleState == DESORB){
+      if (((sensorData->temperature >= mSetpoints.temperature - HEATING_EPSILON) && (mData.stateTime >= mSettings.minHeatingTime)) || mData.stateTime >= mSettings.maxHeatingTime){	
+        mSetpoints.cycleState = INTERMEDIATE_C;
+        //Update Setpoints for INTERMEDIATE_C - Temperature, Pressure
+        mSetpoints.temperature = mSettings.absorbTemp;
+        mSetpoints.inPressure = mSettings.inPressure;
+        mSetpoints.outPressure = 14.5;
+        //Reset Timer
+        beginStateTime = myMillis()/1000.0;
+      }
+    }
+    else if (mSetpoints.cycleState == INTERMEDIATE_C){
       //SWITCHING CONDITIONS - At the end of the desorption state, switch to absorption
-      if (((sensorData->temperature >= mSetpoints.temperature - HEATING_EPSILON) && (mData.stateTime >= mSettings.minHeatingTime)) || mData.stateTime >= mSettings.maxHeatingTime){
+      if (sensorData->temperature <= mSetpoints.temperature || mData.stateTime >= mSettings.maxCoolingTime){
         mSetpoints.cycles++;
         mSetpoints.cycleState = ABSORB;
-        //Update Setpoints for ABSORBTION - Temperature, Pressure
+        //Update Setpoints for ABSORBTION  Temperature, Pressure
         mSetpoints.temperature = mSettings.absorbTemp;
         mSetpoints.inPressure = mSettings.inPressure;
         mSetpoints.outPressure = 14.5;
