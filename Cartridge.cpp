@@ -119,6 +119,14 @@ void Cartridge::update(){
       vC.toggle(true);
       pumpAPID.toggle(false);
       pumpBPID.toggle(true);
+    }
+    else if (currentTest->getTestSetpoints()->cycleState == INTERMEDIATE_C){
+      vA.toggle(false);
+      vB.toggle(false);   //This should be PWM'd to set backpressure
+      vC.toggle(false);
+      pumpAPID.toggle(true);
+      pumpBPID.toggle(false);
+
     } else{
 
     }
